@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.monero</groupId>
-    <artifactId>MultiBooks</artifactId>
+    <artifactId>MultiBooksBackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>MultiBooks</name>
     <description>
