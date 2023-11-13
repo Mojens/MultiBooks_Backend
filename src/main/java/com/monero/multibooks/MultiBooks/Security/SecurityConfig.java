@@ -79,6 +79,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorize) -> authorize
                 //Obviously we need to be able to login without being logged in :-)
                 .antMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
 
                 // Api documentation startpage
                 .antMatchers("/").permitAll()

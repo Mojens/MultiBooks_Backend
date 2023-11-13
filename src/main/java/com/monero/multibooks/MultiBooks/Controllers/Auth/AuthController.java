@@ -2,9 +2,13 @@ package com.monero.multibooks.MultiBooks.Controllers.Auth;
 
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginResponse;
+import com.monero.multibooks.MultiBooks.Dto.Shared.SuccesResponse;
+import com.monero.multibooks.MultiBooks.Dto.User.UserRequest;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
+import com.monero.multibooks.MultiBooks.Service.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,11 +20,10 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 
@@ -37,11 +40,15 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
+    private final UserService userService;
+
     @Autowired
     JwtEncoder encoder;
 
-    public AuthController(AuthenticationManager authenticationManager) {
+    public AuthController(AuthenticationManager authenticationManager,
+                          UserService userService) {
         this.authenticationManager = authenticationManager;
+        this.userService = userService;
     }
 
     @PostMapping("login")
@@ -58,7 +65,7 @@ public class AuthController {
                     .collect(joining(" "));
 
             JwtClaimsSet claims = JwtClaimsSet.builder()
-                    .issuer(tokenIssuer)  //Only this for simplicity
+                    .issuer(tokenIssuer)
                     .issuedAt(now)
                     .audience(Arrays.asList("not used"))
                     .expiresAt(now.plusSeconds(tokenExpiration))
@@ -74,8 +81,14 @@ public class AuthController {
             return ResponseEntity.ok()
                     .body(new LoginResponse(user.getUsername(),token));
         } catch (BadCredentialsException ex) {
-            throw ex;
-            //throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Username or password wrong");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Username or password wrong");
         }
     }
+
+    @PostMapping("register")
+    public ResponseEntity<SuccesResponse> register(@RequestBody UserRequest request){
+        return ResponseEntity.ok()
+                .body(userService.registerUser(request));
+    }
+
 }
