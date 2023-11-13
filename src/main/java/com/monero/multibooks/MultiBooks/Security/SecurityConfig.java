@@ -61,7 +61,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        //This line is added to make the h2-console work (if needed)
         http.headers().frameOptions().disable();
         http
                 .cors().and().csrf().disable()
@@ -81,27 +80,10 @@ public class SecurityConfig {
                 //Obviously we need to be able to login without being logged in :-)
                 .antMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 
-                //Required in order to use the h2-console
-                .antMatchers("/h2*/**").permitAll()
-
-                .antMatchers("/").permitAll() //Allow the default index.html file
-
-                //Next two lines only required if you plan to do the cookie/session-demo from within this project
-                .antMatchers("/session-demo.html").permitAll()
-                .antMatchers("/api/cookie/**").permitAll()
-
-                //Allow anonymous access to this endpoint
-                //.antMatchers(HttpMethod.GET,"/api/demo/anonymous").permitAll()
-
-                //necessary to allow for "nice" JSON Errors
+                // Api documentation startpage
+                .antMatchers("/").permitAll()
                 .antMatchers("/error").permitAll()
 
-                //.antMatchers("/", "/**").permitAll()
-
-                .antMatchers(HttpMethod.GET,"/api/demo/anonymous").permitAll()
-
-                // Demonstrates another way to add roles to an endpoint
-                // .antMatchers(HttpMethod.GET, "/api/demo/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated());
 
         return http.build();
@@ -117,7 +99,6 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-    /* Initialize static value "secret" */
     @Value("${app.secret-key}")
     private String secretKey;
     public static String tokenSecret;
@@ -126,11 +107,10 @@ public class SecurityConfig {
     public void setStaticValue(String secretKey) {
         SecurityConfig.tokenSecret = secretKey;
     }
-    /* End of Initialize static value "secret" */
+
 
     @Bean
     public JwtEncoder jwtEncoder() throws JOSEException {
-        System.out.println("1) ---> "+tokenSecret);
         SecretKey key = new SecretKeySpec(tokenSecret.getBytes(), "HmacSHA256");
         JWKSource<SecurityContext> immutableSecret = new ImmutableSecret<SecurityContext>(key);
         return new NimbusJwtEncoder(immutableSecret);
@@ -138,14 +118,10 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        System.out.println("2) ---> "+tokenSecret);
         SecretKey originalKey = new SecretKeySpec(tokenSecret.getBytes(), "HmacSHA256");
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(originalKey).build();
         return jwtDecoder;
     }
-
-
-    //TBD --> IS THIS THE RIGHT WAY
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
