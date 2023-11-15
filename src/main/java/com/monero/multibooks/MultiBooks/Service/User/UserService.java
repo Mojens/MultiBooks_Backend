@@ -1,6 +1,6 @@
 package com.monero.multibooks.MultiBooks.Service.User;
 
-import com.monero.multibooks.MultiBooks.Dto.Shared.SuccesResponse;
+import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Dto.User.UserRequest;
 import com.monero.multibooks.MultiBooks.Dto.User.UserResponse;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
@@ -19,10 +19,10 @@ public class UserService {
 
 
 
-    public SuccesResponse registerUser(@RequestBody UserRequest request){
+    public ApiResponse registerUser(@RequestBody UserRequest request){
         User userToCreate = new User(request.getEmail(), request.getPassword());
         User userCreated = userRepository.save(userToCreate);
-        return new SuccesResponse(new UserResponse(userCreated.getEmail(), userCreated.getCreated()),"User has been successfully registered");
+        return new ApiResponse(new UserResponse(userCreated.getEmail(), userCreated.getCreated()),"User has been successfully registered");
     }
 
 

@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SuccesResponse {
+public class ApiResponse {
 
     private Object data;
     private String message;
 
-    public SuccesResponse(Object t, String message) {
+    public ApiResponse(Object t, String message) {
         this.data = t;
         this.message = message;
     }

@@ -2,7 +2,7 @@ package com.monero.multibooks.MultiBooks.Controllers.Auth;
 
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginResponse;
-import com.monero.multibooks.MultiBooks.Dto.Shared.SuccesResponse;
+import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Dto.User.UserRequest;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
 import com.monero.multibooks.MultiBooks.Service.User.UserService;
@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest request) {
         try {
             UsernamePasswordAuthenticationToken uat = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
             Authentication authentication = authenticationManager.authenticate(uat);
@@ -79,14 +79,14 @@ public class AuthController {
 
 
             return ResponseEntity.ok()
-                    .body(new LoginResponse(user.getUsername(),token));
+                    .body(new ApiResponse(new LoginResponse(user.getUsername(),token),"You have successfully logged in"));
         } catch (BadCredentialsException ex) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Username or password wrong");
         }
     }
 
     @PostMapping("register")
-    public ResponseEntity<SuccesResponse> register(@RequestBody UserRequest request){
+    public ResponseEntity<ApiResponse> register(@RequestBody UserRequest request){
         return ResponseEntity.ok()
                 .body(userService.registerUser(request));
     }
