@@ -1,10 +1,13 @@
 package com.monero.multibooks.MultiBooks.Controllers.Auth;
 
+import com.monero.multibooks.MultiBooks.Dto.Auth.ForgotPasswordRequest;
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginResponse;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
+import com.monero.multibooks.MultiBooks.Dto.User.UpdateUserRequest;
 import com.monero.multibooks.MultiBooks.Dto.User.UserRequest;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
+import com.monero.multibooks.MultiBooks.Service.Auth.AuthService;
 import com.monero.multibooks.MultiBooks.Service.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.joining;
 
@@ -42,13 +46,16 @@ public class AuthController {
 
     private final UserService userService;
 
+    private final AuthService authService;
+
     @Autowired
     JwtEncoder encoder;
 
     public AuthController(AuthenticationManager authenticationManager,
-                          UserService userService) {
+                          UserService userService, AuthService authService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.authService = authService;
     }
 
     @PostMapping("login")
@@ -89,6 +96,20 @@ public class AuthController {
     public ResponseEntity<ApiResponse> register(@RequestBody UserRequest request){
         return ResponseEntity.ok()
                 .body(userService.registerUser(request));
+    }
+
+    @PostMapping("forgot-password")
+    public ResponseEntity<ApiResponse> forgotPassword(@RequestBody ForgotPasswordRequest request){
+        User foundUser = userService.findUserByEmail(request.getEmail());
+        if (foundUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email not found");
+        }
+        String resetToken = UUID.randomUUID().toString();
+        foundUser.setResetToken(resetToken);
+        userService.updateUser(new UpdateUserRequest(foundUser));
+
+        authService.sendPasswordResetEmail(request.getEmail(),resetToken);
+        return ResponseEntity.ok(new ApiResponse("","Reset link sent to your email"));
     }
 
 }

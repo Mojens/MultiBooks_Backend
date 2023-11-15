@@ -12,8 +12,8 @@ public class ApiResponse {
     private Object data;
     private String message;
 
-    public ApiResponse(Object t, String message) {
-        this.data = t;
+    public ApiResponse(Object T, String message) {
+        this.data = T;
         this.message = message;
     }
 }

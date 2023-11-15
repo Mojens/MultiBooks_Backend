@@ -37,6 +37,9 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime edited;
 
+    @Column(length = 64, unique = true)
+    private String resetToken;
+
     @Transient
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
