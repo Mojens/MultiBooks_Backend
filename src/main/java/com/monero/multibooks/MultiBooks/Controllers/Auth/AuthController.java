@@ -113,4 +113,14 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse("","Reset link sent to your email"));
     }
 
+    @GetMapping("isAuthenticated")
+    public ResponseEntity<ApiResponse> isAuthenticated(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            return ResponseEntity.ok().body(new ApiResponse("User is authenticated.", ""));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse("User is not authenticated.", ""));
+        }
+    }
+
 }

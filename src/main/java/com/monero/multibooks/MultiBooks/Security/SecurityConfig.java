@@ -81,6 +81,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/auth/isAuthenticated").permitAll()
 
                 // Api documentation startpage
                 .antMatchers("/").permitAll()
