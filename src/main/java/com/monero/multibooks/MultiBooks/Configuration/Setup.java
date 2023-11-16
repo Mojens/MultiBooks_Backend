@@ -25,5 +25,8 @@ public class Setup implements ApplicationRunner {
         LoginRequest request = new LoginRequest("mailo","test123");
         User user2 = new User(request);
         userRepository.save(user2);
+
+        User user3 = new User("mohammadmurtada@outlook.dk","test123");
+        userRepository.save(user3);
     }
 }

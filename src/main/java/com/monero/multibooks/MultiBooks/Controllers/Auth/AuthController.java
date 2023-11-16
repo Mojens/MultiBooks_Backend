@@ -100,6 +100,7 @@ public class AuthController {
 
     @PostMapping("forgot-password")
     public ResponseEntity<ApiResponse> forgotPassword(@RequestBody ForgotPasswordRequest request){
+        System.out.println(request);
         User foundUser = userService.findUserByEmail(request.getEmail());
         if (foundUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email not found");

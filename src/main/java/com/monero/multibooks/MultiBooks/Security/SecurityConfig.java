@@ -80,6 +80,7 @@ public class SecurityConfig {
                 //Obviously we need to be able to login without being logged in :-)
                 .antMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
 
                 // Api documentation startpage
                 .antMatchers("/").permitAll()

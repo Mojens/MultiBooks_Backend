@@ -1,6 +1,5 @@
 package com.monero.multibooks.MultiBooks.Service.Auth;
 
-import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,10 +24,7 @@ public class AuthService {
     private String password;
 
 
-    private UserRepository userRepository;
-
-    public AuthService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AuthService() {
     }
 
     public void sendPasswordResetEmail(String toEmail, String resetToken){
@@ -50,21 +46,16 @@ public class AuthService {
         });
 
         try {
-            // Create a MimeMessage object
             Message message = new MimeMessage(session);
 
-            // Set the sender's email address
             message.setFrom(new InternetAddress("your-email@example.com"));
 
-            // Set the recipient's email address
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
 
-            // Set the email subject and content
             message.setSubject("Password Reset Request");
             message.setText("Please click the following link to reset your password: "
                     + "http://yourwebsite.com/reset-password?token=" + resetToken);
 
-            // Send the email
             Transport.send(message);
 
         } catch (MessagingException e) {
