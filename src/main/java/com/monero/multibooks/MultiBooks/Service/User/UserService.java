@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class UserService {
 
@@ -26,14 +23,18 @@ public class UserService {
 
 
     public ApiResponse registerUser(@RequestBody RegisterRequest request){
-        
-        User userCreated = userRepository.save(userToCreate);
+        if(!request.getPassword().equals(request.getConfirmPassword())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User with that email already exists");
+        }
+        User userCreated = userRepository.save(new User(request.getEmail(), request.getPassword()));
         return new ApiResponse(new UserResponse(userCreated),"User has been successfully registered");
     }
 
     public User findUserByEmail(@RequestBody String mail){
-        User user = userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        return user;
+        return userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
     public ApiResponse updateUser(@RequestBody UpdateUserRequest request){
