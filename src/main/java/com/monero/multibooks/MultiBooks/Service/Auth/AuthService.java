@@ -27,7 +27,7 @@ public class AuthService {
     public AuthService() {
     }
 
-    public void sendPasswordResetEmail(String toEmail, String resetToken){
+    public void sendPasswordResetEmail(String toEmail, String resetToken) {
         String smtpHost = host;
         String smtpUsername = username;
         String smtpPassword = password;
@@ -64,5 +64,5 @@ public class AuthService {
     }
 
 
-    }
+}
 
