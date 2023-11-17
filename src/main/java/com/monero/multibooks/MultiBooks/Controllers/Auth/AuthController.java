@@ -3,6 +3,7 @@ package com.monero.multibooks.MultiBooks.Controllers.Auth;
 import com.monero.multibooks.MultiBooks.Dto.Auth.ForgotPasswordRequest;
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginResponse;
+import com.monero.multibooks.MultiBooks.Dto.Auth.RegisterRequest;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Dto.User.UpdateUserRequest;
 import com.monero.multibooks.MultiBooks.Dto.User.UserRequest;
@@ -93,7 +94,7 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<ApiResponse> register(@RequestBody UserRequest request){
+    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request){
         return ResponseEntity.ok()
                 .body(userService.registerUser(request));
     }

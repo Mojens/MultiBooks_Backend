@@ -1,10 +1,14 @@
 package com.monero.multibooks.MultiBooks.Dto.Auth;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
+@NoArgsConstructor
+@Builder
 public class LoginRequest {
 
     String email;

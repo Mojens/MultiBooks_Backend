@@ -2,11 +2,15 @@ package com.monero.multibooks.MultiBooks.Dto.Auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
+@NoArgsConstructor
+@Builder
 public class ForgotPasswordRequest {
 
     String email;

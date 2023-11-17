@@ -1,8 +1,8 @@
 package com.monero.multibooks.MultiBooks.Service.User;
 
+import com.monero.multibooks.MultiBooks.Dto.Auth.RegisterRequest;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Dto.User.UpdateUserRequest;
-import com.monero.multibooks.MultiBooks.Dto.User.UserRequest;
 import com.monero.multibooks.MultiBooks.Dto.User.UserResponse;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
 import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -22,8 +25,8 @@ public class UserService {
 
 
 
-    public ApiResponse registerUser(@RequestBody UserRequest request){
-        User userToCreate = new User(request.getEmail(), request.getPassword());
+    public ApiResponse registerUser(@RequestBody RegisterRequest request){
+        
         User userCreated = userRepository.save(userToCreate);
         return new ApiResponse(new UserResponse(userCreated),"User has been successfully registered");
     }
