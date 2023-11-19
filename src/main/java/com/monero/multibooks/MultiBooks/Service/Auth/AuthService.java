@@ -72,7 +72,7 @@ public class AuthService {
 
             message.setSubject("Password Reset Request");
             message.setText("Please click the following link to reset your password: "
-                    + "http://yourwebsite.com/reset-password?token=" + resetToken);
+                    + "http://localhost:4200/reset-password/" + resetToken);
 
             Transport.send(message);
 
