@@ -13,15 +13,12 @@ import lombok.Setter;
 public class UpdateUserRequest {
 
     String email;
-    String resetToken;
 
-    public UpdateUserRequest(String email, String resetToken) {
+    public UpdateUserRequest(String email) {
         this.email = email;
-        this.resetToken = resetToken;
     }
 
     public UpdateUserRequest(User u) {
         this.email = u.getEmail();
-        this.resetToken = u.getResetToken();
     }
 }

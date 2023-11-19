@@ -1,12 +1,7 @@
 package com.monero.multibooks.MultiBooks.Controllers.Auth;
 
-import com.monero.multibooks.MultiBooks.Dto.Auth.ForgotPasswordRequest;
-import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
-import com.monero.multibooks.MultiBooks.Dto.Auth.LoginResponse;
-import com.monero.multibooks.MultiBooks.Dto.Auth.RegisterRequest;
+import com.monero.multibooks.MultiBooks.Dto.Auth.*;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
-import com.monero.multibooks.MultiBooks.Dto.User.UpdateUserRequest;
-import com.monero.multibooks.MultiBooks.Dto.User.UserRequest;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
 import com.monero.multibooks.MultiBooks.Service.Auth.AuthService;
 import com.monero.multibooks.MultiBooks.Service.User.UserService;
@@ -28,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.UUID;
 
 import static java.util.stream.Collectors.joining;
 
@@ -106,11 +100,10 @@ public class AuthController {
         if (foundUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email not found");
         }
-        String resetToken = UUID.randomUUID().toString();
-        foundUser.setResetToken(resetToken);
-        userService.updateUser(new UpdateUserRequest(foundUser));
-
-        authService.sendPasswordResetEmail(request.getEmail(),resetToken);
+        ApiResponse tokenResponse = authService.getResetToken(request.getEmail());
+        String resetToken = (String) tokenResponse.getData();
+        System.out.println(resetToken);
+        authService.sendPasswordResetEmail(request.getEmail(), resetToken);
         return ResponseEntity.ok(new ApiResponse("","Reset link sent to your email"));
     }
 
@@ -122,6 +115,12 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ApiResponse("User is not authenticated.", ""));
         }
+    }
+
+    @PostMapping("reset-password")
+    public ResponseEntity<ApiResponse> resetPassword(@RequestBody ResetPasswordRequest request){
+        return ResponseEntity.ok()
+                .body(authService.resetPassword(request));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.monero.multibooks.MultiBooks.Entities.User;
 
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
+import com.monero.multibooks.MultiBooks.Entities.Auth.ResetToken;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,16 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @Builder
 @Entity
@@ -37,8 +35,8 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime edited;
 
-    @Column(length = 64, unique = true)
-    private String resetToken;
+    @OneToMany(mappedBy = "user") // "user" should match the field name in the ResetToken entity
+    private List<ResetToken> resetTokens;
 
     @Transient
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
