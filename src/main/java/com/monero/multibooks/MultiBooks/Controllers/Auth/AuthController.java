@@ -104,7 +104,7 @@ public class AuthController {
         String resetToken = (String) tokenResponse.getData();
         System.out.println(resetToken);
         authService.sendPasswordResetEmail(request.getEmail(), resetToken);
-        return ResponseEntity.ok(new ApiResponse("","Reset link sent to your email"));
+        return ResponseEntity.ok(new ApiResponse("","Reset link sent to your email - Link expires in 24 hours"));
     }
 
     @GetMapping("isAuthenticated")
@@ -121,6 +121,12 @@ public class AuthController {
     public ResponseEntity<ApiResponse> resetPassword(@RequestBody ResetPasswordRequest request){
         return ResponseEntity.ok()
                 .body(authService.resetPassword(request));
+    }
+
+    @GetMapping("check-token/{token}")
+    public ResponseEntity<ApiResponse> checkToken(@PathVariable String token){
+        return ResponseEntity.ok()
+                .body(authService.checkToken(token));
     }
 
 }

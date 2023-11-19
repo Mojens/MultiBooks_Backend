@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -132,6 +133,15 @@ public class AuthService {
         return new ApiResponse(null, "Password has been successfully reset");
     }
 
+    public ApiResponse checkToken(@PathVariable String token){
+        ResetToken foundResetToken = resetTokenRepository.findById(token).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found"));
+        Instant now = Instant.now();
+
+        if (now.isAfter(foundResetToken.getTokenExpiry())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token has expired");
+        }
+        return new ApiResponse(null, "Token is valid");
+    }
 
     @Scheduled(cron = "0 0 0 * * *") // Cron expression for midnight
     public void cleanupExpiredTokens() {
