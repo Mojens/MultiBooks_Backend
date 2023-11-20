@@ -133,17 +133,17 @@ public class AuthService {
         return new ApiResponse(null, "Password has been successfully reset");
     }
 
-    public ApiResponse checkToken(@PathVariable String token){
-        ResetToken foundResetToken = resetTokenRepository.findById(token).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found"));
+    public ApiResponse verifyToken(@PathVariable String token){
+        ResetToken foundResetToken = resetTokenRepository.findById(token).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Link is broken, please request a new one"));
         Instant now = Instant.now();
 
         if (now.isAfter(foundResetToken.getTokenExpiry())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token has expired");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Link has expired, please request a new one");
         }
         return new ApiResponse(null, "Token is valid");
     }
 
-    @Scheduled(cron = "0 0 0 * * *") // Cron expression for midnight
+    @Scheduled(cron = "0 0 0 * * *")
     public void cleanupExpiredTokens() {
         Instant now = Instant.now();
         resetTokenRepository.deleteAllByTokenExpiryBefore(now);

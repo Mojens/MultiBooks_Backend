@@ -123,10 +123,10 @@ public class AuthController {
                 .body(authService.resetPassword(request));
     }
 
-    @GetMapping("check-token/{token}")
-    public ResponseEntity<ApiResponse> checkToken(@PathVariable String token){
+    @PostMapping("verify-reset-token/{token}")
+    public ResponseEntity<ApiResponse> verifyToken(@PathVariable String token){
         return ResponseEntity.ok()
-                .body(authService.checkToken(token));
+                .body(authService.verifyToken(token));
     }
 
 }
