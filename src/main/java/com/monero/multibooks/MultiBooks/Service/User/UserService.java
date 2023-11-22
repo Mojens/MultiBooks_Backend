@@ -44,6 +44,11 @@ public class UserService {
         return new ApiResponse(updatedUser,"Your user has been successfully updated");
     }
 
+    public UserResponse getUser(String mail){
+        User user = userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return new UserResponse(user);
+    }
+
 
 
 

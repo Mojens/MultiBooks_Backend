@@ -1,13 +1,24 @@
 package com.monero.multibooks.MultiBooks.Dto.BusinessTeam;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class BusinessTeamRequest {
+
+    int CVRNumber;
+    String VATNumber;
+    String companyName;
+    String address;
+    String city;
+    int zipCode;
+    String country;
+    String phoneNumber;
+    String email;
+    String website;
+
+    public BusinessTeamRequest() {
+    }
 }
