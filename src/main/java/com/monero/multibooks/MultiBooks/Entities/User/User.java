@@ -2,7 +2,11 @@ package com.monero.multibooks.MultiBooks.Entities.User;
 
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
 import com.monero.multibooks.MultiBooks.Entities.Auth.ResetToken;
-import lombok.*;
+import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,8 +39,12 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime edited;
 
-    @OneToMany(mappedBy = "user") // "user" should match the field name in the ResetToken entity
+    @OneToMany(mappedBy = "user")
     private List<ResetToken> resetTokens;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private BusinessTeam businessTeam;
 
     @Transient
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
