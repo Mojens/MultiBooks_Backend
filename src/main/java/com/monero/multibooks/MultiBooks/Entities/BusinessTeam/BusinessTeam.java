@@ -1,12 +1,10 @@
 package com.monero.multibooks.MultiBooks.Entities.BusinessTeam;
 
 import com.monero.multibooks.MultiBooks.Entities.User.User;
+import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Getter
@@ -48,6 +46,23 @@ public class BusinessTeam {
     @Column(length = 100)
     private String website;
 
+    @ManyToOne
+    @JoinColumn(name = "team_owner")
+    private User teamOwner;
+
     @OneToMany(mappedBy = "businessTeam")
-    private List<User> users;
+    private List<UserTeam> userTeams;
+
+    public BusinessTeam(int CVRNumber, String VATNumber, String companyName, String address, String city, int zipCode, String country, String phoneNumber, String email, String website) {
+        this.CVRNumber = CVRNumber;
+        this.VATNumber = VATNumber;
+        this.companyName = companyName;
+        this.address = address;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.country = country;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.website = website;
+    }
 }

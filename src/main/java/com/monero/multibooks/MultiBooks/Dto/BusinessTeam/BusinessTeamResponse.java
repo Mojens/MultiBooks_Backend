@@ -20,6 +20,7 @@ public class BusinessTeamResponse {
     private String phoneNumber;
     private String email;
     private String website;
+    private String ownerEmail;
 
     public BusinessTeamResponse(BusinessTeam businessTeam) {
         this.CVRNumber = businessTeam.getCVRNumber();
@@ -32,5 +33,6 @@ public class BusinessTeamResponse {
         this.phoneNumber = businessTeam.getPhoneNumber();
         this.email = businessTeam.getEmail();
         this.website = businessTeam.getWebsite();
+        this.ownerEmail = businessTeam.getTeamOwner().getEmail();
     }
 }

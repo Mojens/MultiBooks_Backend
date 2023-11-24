@@ -1,14 +1,19 @@
 package com.monero.multibooks.MultiBooks.Dto.BusinessTeam;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Setter
 @Getter
-@AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class BusinessTeamRequest {
 
+    @JsonProperty("CVRNumber")
     int CVRNumber;
+    @JsonProperty("VATNumber")
     String VATNumber;
     String companyName;
     String address;
@@ -18,7 +23,5 @@ public class BusinessTeamRequest {
     String phoneNumber;
     String email;
     String website;
-
-    public BusinessTeamRequest() {
-    }
+    String ownerEmail;
 }

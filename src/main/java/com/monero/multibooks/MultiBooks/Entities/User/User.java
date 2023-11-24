@@ -3,6 +3,7 @@ package com.monero.multibooks.MultiBooks.Entities.User;
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
 import com.monero.multibooks.MultiBooks.Entities.Auth.ResetToken;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
+import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,9 +43,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<ResetToken> resetTokens;
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private BusinessTeam businessTeam;
+    @OneToMany(mappedBy = "teamOwner")
+    private List<BusinessTeam> businessTeams;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserTeam> userTeams;
 
     @Transient
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

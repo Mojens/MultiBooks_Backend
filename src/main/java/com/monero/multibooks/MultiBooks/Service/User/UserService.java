@@ -39,7 +39,6 @@ public class UserService {
 
     public ApiResponse updateUser(@RequestBody UpdateUserRequest request){
         User user = userRepository.findById(request.getEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        // Skifte user oplysninger
         User updatedUser = userRepository.save(user);
         return new ApiResponse(updatedUser,"Your user has been successfully updated");
     }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,13 +16,13 @@ public class UserResponse {
 
     private String email;
     private LocalDateTime created;
-    private BusinessTeamResponse businessTeam;
+    private List<BusinessTeamResponse> ownedTeams;
 
     public UserResponse(User u) {
         this.email = u.getEmail();
         this.created = u.getCreated();
-        if (u.getBusinessTeam() != null) {
-            this.businessTeam = new BusinessTeamResponse(u.getBusinessTeam());
+        if(u.getBusinessTeams() != null){
+            this.ownedTeams = u.getBusinessTeams().stream().map(BusinessTeamResponse::new).toList();
         }
     }
 }

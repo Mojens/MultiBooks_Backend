@@ -34,8 +34,8 @@ public class Setup implements ApplicationRunner {
         userRepository.save(user3);
 
         BusinessTeam team = BusinessTeam.builder()
-                .CVRNumber(12345678)
-                .VATNumber("DK12345678")
+                .CVRNumber(00000000)
+                .VATNumber("DK12345321")
                 .companyName("Monero ApS")
                 .address("Testvej 1")
                 .city("Testby")
@@ -46,7 +46,8 @@ public class Setup implements ApplicationRunner {
                 .website("www.monero.dk")
                 .build();
         businessTeamRepository.save(team);
-        user3.setBusinessTeam(team);
+
+
         userRepository.save(user3);
 
 
