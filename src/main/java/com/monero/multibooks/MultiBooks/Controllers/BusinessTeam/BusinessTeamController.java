@@ -7,6 +7,8 @@ import com.monero.multibooks.MultiBooks.Service.BusinessTeam.BusinessTeamService
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/business-team/")
@@ -31,6 +33,12 @@ public class BusinessTeamController {
     public ResponseEntity<ApiResponse> addUserToBusinessTeam(@PathVariable String mail, @PathVariable int CVRNumber){
         ApiResponse response = businessTeamService.addUserToBusinessTeam(mail, CVRNumber);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("user/{mail}")
+    public ResponseEntity<ApiResponse> userApartOfBusinessTeam(@PathVariable String mail){
+        List<BusinessTeamResponse> response = businessTeamService.userApartOfBusinessTeam(mail);
+        return ResponseEntity.ok(new ApiResponse(response,"All teams user is apart of"));
     }
 
 }

@@ -9,8 +9,10 @@ import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
 import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
 import com.monero.multibooks.MultiBooks.Repository.UserTeam.UserTeamRepository;
+import com.monero.multibooks.MultiBooks.Service.Auth.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,13 +26,16 @@ public class BusinessTeamService {
     private final BusinessTeamRepository businessTeamRepository;
     private final UserRepository userRepository;
     private final UserTeamRepository userTeamRepository;
+    private final AuthService authService;
 
     public BusinessTeamService(BusinessTeamRepository businessTeamRepository,
                                UserRepository userRepository,
-                               UserTeamRepository userTeamRepository) {
+                               UserTeamRepository userTeamRepository,
+                               AuthService authService) {
         this.businessTeamRepository = businessTeamRepository;
         this.userRepository = userRepository;
         this.userTeamRepository = userTeamRepository;
+        this.authService = authService;
     }
 
 
@@ -86,6 +91,13 @@ public class BusinessTeamService {
         UserTeam newUserTeam = new UserTeam(foundUser, foundBusinessTeam);
         userTeamRepository.save(newUserTeam);
         return new ApiResponse(null, "User has been successfully added to business team");
+    }
+
+    public List<BusinessTeamResponse> userApartOfBusinessTeam(@PathVariable String mail) {
+        authService.validateUserAccess(mail);
+        User foundUser = userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        List<BusinessTeam> businessTeams = foundUser.getBusinessTeams();
+        return businessTeams.stream().map(BusinessTeamResponse::new).toList();
     }
 
 }

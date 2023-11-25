@@ -9,6 +9,8 @@ import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -141,6 +143,18 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Link has expired, please request a new one");
         }
         return new ApiResponse(null, "Token is valid");
+    }
+
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
+    }
+
+    public void validateUserAccess(String mail) {
+        User loggedInUser = getAuthenticatedUser();
+        if (!loggedInUser.getUsername().equals(mail)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
