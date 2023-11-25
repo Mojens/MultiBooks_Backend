@@ -67,7 +67,6 @@ public class SecurityConfig {
 
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //REF: https://mflash.dev/post/2021/01/19/error-handling-for-spring-security-resource-server/
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(new CustomOAuth2AuthenticationEntryPoint())
                         .accessDeniedHandler(new CustomOAuth2AccessDeniedHandler())
@@ -83,6 +82,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/auth/isAuthenticated").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/auth/verify-reset-token/{token}").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/business-team/create").permitAll()
 
                 .antMatchers("/").permitAll()
                 .antMatchers("/error").permitAll()
