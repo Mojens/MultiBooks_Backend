@@ -6,18 +6,24 @@ import com.monero.multibooks.MultiBooks.Dto.User.UpdateUserRequest;
 import com.monero.multibooks.MultiBooks.Dto.User.UserResponse;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
 import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
+import com.monero.multibooks.MultiBooks.Service.Auth.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AuthService authService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       AuthService authService) {
         this.userRepository = userRepository;
+        this.authService = authService;
     }
 
 
@@ -43,7 +49,8 @@ public class UserService {
         return new ApiResponse(updatedUser,"Your user has been successfully updated");
     }
 
-    public UserResponse getUser(String mail){
+    public UserResponse getUser(String mail, HttpServletRequest request){
+        this.authService.validateUserAccess(mail, request);
         User user = userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return new UserResponse(user);
     }

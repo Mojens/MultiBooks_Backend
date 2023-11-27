@@ -41,7 +41,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        System.out.println("CALLED");
         return new BCryptPasswordEncoder();
     }
 

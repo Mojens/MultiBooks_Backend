@@ -3,8 +3,10 @@ package com.monero.multibooks.MultiBooks.Configuration;
 import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
+import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
 import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
+import com.monero.multibooks.MultiBooks.Repository.UserTeam.UserTeamRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Controller;
@@ -15,10 +17,12 @@ public class Setup implements ApplicationRunner {
 
     private final UserRepository userRepository;
     private final BusinessTeamRepository businessTeamRepository;
+    private final UserTeamRepository userTeamRepository;
 
-    public Setup(UserRepository userRepository, BusinessTeamRepository businessTeamRepository) {
+    public Setup(UserRepository userRepository, BusinessTeamRepository businessTeamRepository, UserTeamRepository userTeamRepository) {
         this.userRepository = userRepository;
         this.businessTeamRepository = businessTeamRepository;
+        this.userTeamRepository = userTeamRepository;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class Setup implements ApplicationRunner {
         userRepository.save(user3);
 
         BusinessTeam team = BusinessTeam.builder()
-                .CVRNumber(00000000)
+                .CVRNumber(12345321)
                 .VATNumber("DK12345321")
                 .companyName("Monero ApS")
                 .address("Testvej 1")
@@ -44,11 +48,31 @@ public class Setup implements ApplicationRunner {
                 .phoneNumber("12345678")
                 .email("gg@hotmail.com")
                 .website("www.monero.dk")
+                .teamOwner(user3)
                 .build();
         businessTeamRepository.save(team);
+        UserTeam userTeam = new UserTeam(user3, team);
+        userTeamRepository.save(userTeam);
 
+        BusinessTeam team2 = BusinessTeam.builder()
+                .CVRNumber(98765432)
+                .VATNumber("DK98765432")
+                .companyName("Konero ApS")
+                .address("Testvej 1")
+                .city("Testby")
+                .zipCode(1234)
+                .country("Denmark")
+                .phoneNumber("12345678")
+                .email("oo@hotmail.com")
+                .website("www.konero.dk")
+                .teamOwner(user2)
+                .build();
+        businessTeamRepository.save(team2);
+     UserTeam userTeam2 = new UserTeam(user2, team2);
+     userTeamRepository.save(userTeam2);
+     UserTeam userTeam3 = new UserTeam(user3, team2);
+     userTeamRepository.save(userTeam3);
 
-        userRepository.save(user3);
 
 
     }

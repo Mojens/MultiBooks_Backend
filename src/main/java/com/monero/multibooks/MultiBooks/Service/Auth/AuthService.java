@@ -9,8 +9,8 @@ import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -40,12 +41,15 @@ public class AuthService {
 
     private final ResetTokenRepository resetTokenRepository;
     private final UserRepository userRepository;
+    private final JwtDecoder jwtDecoder;
 
 
     public AuthService(ResetTokenRepository resetTokenRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       JwtDecoder jwtDecoder) {
         this.resetTokenRepository = resetTokenRepository;
         this.userRepository = userRepository;
+        this.jwtDecoder = jwtDecoder;
     }
 
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
@@ -145,16 +149,26 @@ public class AuthService {
         return new ApiResponse(null, "Token is valid");
     }
 
-    public User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (User) authentication.getPrincipal();
+
+    public void validateUserAccess(String mail, HttpServletRequest request) {
+        String token = extractToken(request);
+        try {
+            Jwt jwt = jwtDecoder.decode(token);
+            User loggedInUser = userRepository.findById(jwt.getSubject()).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
+            if (!loggedInUser.getUsername().equalsIgnoreCase(mail)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
     }
 
-    public void validateUserAccess(String mail) {
-        User loggedInUser = getAuthenticatedUser();
-        if (!loggedInUser.getUsername().equals(mail)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+    public String extractToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
         }
+        return null;
     }
 
     @Scheduled(cron = "0 0 0 * * *")

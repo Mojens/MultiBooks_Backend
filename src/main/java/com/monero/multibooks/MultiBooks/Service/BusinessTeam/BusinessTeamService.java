@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,11 +94,17 @@ public class BusinessTeamService {
         return new ApiResponse(null, "User has been successfully added to business team");
     }
 
-    public List<BusinessTeamResponse> userApartOfBusinessTeam(@PathVariable String mail) {
-        authService.validateUserAccess(mail);
-        User foundUser = userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        List<BusinessTeam> businessTeams = foundUser.getBusinessTeams();
-        return businessTeams.stream().map(BusinessTeamResponse::new).toList();
+    public List<BusinessTeamResponse> userApartOfBusinessTeam(@PathVariable String mail, HttpServletRequest request) {
+        authService.validateUserAccess(mail, request);
+        User foundUser = userRepository.findById(mail.toLowerCase()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        List<UserTeam> userTeams = userTeamRepository.findAllByUser(foundUser);
+        return userTeams.stream().map(UserTeam::getBusinessTeam).map(BusinessTeamResponse::new).toList();
+    }
+
+    public BusinessTeamResponse getBusinessTeamById(@PathVariable int CVRNumber, HttpServletRequest request){
+        BusinessTeam foundTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
+        authService.validateUserAccess(foundTeam.getEmail(), request);
+        return new BusinessTeamResponse(foundTeam);
     }
 
 }

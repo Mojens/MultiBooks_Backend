@@ -7,14 +7,13 @@ import com.monero.multibooks.MultiBooks.Service.BusinessTeam.BusinessTeamService
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api/business-team/")
 public class BusinessTeamController {
-
-
 
     private final BusinessTeamService businessTeamService;
 
@@ -31,14 +30,21 @@ public class BusinessTeamController {
 
     @PatchMapping("set/{mail}/{CVRNumber}")
     public ResponseEntity<ApiResponse> addUserToBusinessTeam(@PathVariable String mail, @PathVariable int CVRNumber){
+        System.out.println(mail + " " + CVRNumber);
         ApiResponse response = businessTeamService.addUserToBusinessTeam(mail, CVRNumber);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("user/{mail}")
-    public ResponseEntity<ApiResponse> userApartOfBusinessTeam(@PathVariable String mail){
-        List<BusinessTeamResponse> response = businessTeamService.userApartOfBusinessTeam(mail);
+    public ResponseEntity<ApiResponse> userApartOfBusinessTeam(@PathVariable String mail, HttpServletRequest request){
+        List<BusinessTeamResponse> response = businessTeamService.userApartOfBusinessTeam(mail, request);
         return ResponseEntity.ok(new ApiResponse(response,"All teams user is apart of"));
+    }
+
+    @GetMapping("get/{CVRNumber}")
+    public ResponseEntity<ApiResponse> getBusinessTeam(@PathVariable int CVRNumber, HttpServletRequest request){
+        BusinessTeamResponse response = businessTeamService.getBusinessTeamById(CVRNumber, request);
+        return ResponseEntity.ok(new ApiResponse(response,"Business team found"));
     }
 
 }
