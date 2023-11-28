@@ -4,6 +4,7 @@ import com.monero.multibooks.MultiBooks.Dto.Auth.ResetPasswordRequest;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Entities.Auth.ResetToken;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
+import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import com.monero.multibooks.MultiBooks.Repository.Auth.ResetTokenRepository;
 import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
@@ -151,10 +153,9 @@ public class AuthService {
 
 
     public void validateUserAccess(String mail, HttpServletRequest request) {
-        String token = extractToken(request);
+        String loggedInUserEmail = extractUserEmailFromToken(request);
         try {
-            Jwt jwt = jwtDecoder.decode(token);
-            User loggedInUser = userRepository.findById(jwt.getSubject()).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
+            User loggedInUser = userRepository.findById(loggedInUserEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
             if (!loggedInUser.getUsername().equalsIgnoreCase(mail)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
             }
@@ -169,6 +170,24 @@ public class AuthService {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+
+    private String extractUserEmailFromToken(HttpServletRequest request) {
+        String token = extractToken(request);
+        Jwt jwt = jwtDecoder.decode(token);
+        return jwt.getSubject();
+    }
+
+    public void validateUserTeam(List<UserTeam> userTeams, HttpServletRequest request) {
+        String loggedInUserEmail = extractUserEmailFromToken(request);
+
+        boolean isUserPartOfTeam = userTeams.stream()
+                .anyMatch(userTeam -> userTeam.getUser().getEmail().equalsIgnoreCase(loggedInUserEmail));
+
+        if (!isUserPartOfTeam) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
