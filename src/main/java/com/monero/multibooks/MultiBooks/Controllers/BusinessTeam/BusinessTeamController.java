@@ -22,29 +22,35 @@ public class BusinessTeamController {
     }
 
     @PostMapping("create")
-    public ResponseEntity<ApiResponse> createBusinessTeam(@RequestBody BusinessTeamRequest request){
+    public ResponseEntity<ApiResponse> createBusinessTeam(@RequestBody BusinessTeamRequest request) {
         System.out.println(request);
         BusinessTeamResponse response = businessTeamService.createBusinessTeam(request);
-        return ResponseEntity.ok(new ApiResponse(response,"Business team has been successfully created"));
+        return ResponseEntity.ok(new ApiResponse(response, "Business team has been successfully created"));
     }
 
     @PatchMapping("set/{mail}/{CVRNumber}")
-    public ResponseEntity<ApiResponse> addUserToBusinessTeam(@PathVariable String mail, @PathVariable int CVRNumber){
+    public ResponseEntity<ApiResponse> addUserToBusinessTeam(@PathVariable String mail, @PathVariable int CVRNumber) {
         System.out.println(mail + " " + CVRNumber);
         ApiResponse response = businessTeamService.addUserToBusinessTeam(mail, CVRNumber);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("user/{mail}")
-    public ResponseEntity<ApiResponse> userApartOfBusinessTeam(@PathVariable String mail, HttpServletRequest request){
+    public ResponseEntity<ApiResponse> userApartOfBusinessTeam(@PathVariable String mail, HttpServletRequest request) {
         List<BusinessTeamResponse> response = businessTeamService.userApartOfBusinessTeam(mail, request);
-        return ResponseEntity.ok(new ApiResponse(response,"All teams user is apart of"));
+        return ResponseEntity.ok(new ApiResponse(response, "All teams user is apart of"));
     }
 
     @GetMapping("get/{CVRNumber}")
-    public ResponseEntity<ApiResponse> getBusinessTeam(@PathVariable int CVRNumber, HttpServletRequest request){
+    public ResponseEntity<ApiResponse> getBusinessTeam(@PathVariable int CVRNumber, HttpServletRequest request) {
         BusinessTeamResponse response = businessTeamService.getBusinessTeamById(CVRNumber, request);
-        return ResponseEntity.ok(new ApiResponse(response,"Business team found"));
+        return ResponseEntity.ok(new ApiResponse(response, "Business team found"));
+    }
+
+    @DeleteMapping("delete/{CVRNumber}")
+    public ResponseEntity<ApiResponse> deleteBusinessTeam(@PathVariable int CVRNumber, HttpServletRequest request) {
+        BusinessTeamResponse response = businessTeamService.deleteBusinessTeamById(CVRNumber, request);
+        return ResponseEntity.ok(new ApiResponse(response, "Business team deleted"));
     }
 
 }

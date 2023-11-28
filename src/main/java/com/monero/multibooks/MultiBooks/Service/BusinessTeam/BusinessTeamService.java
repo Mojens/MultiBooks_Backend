@@ -107,4 +107,11 @@ public class BusinessTeamService {
         return new BusinessTeamResponse(foundTeam);
     }
 
+    public BusinessTeamResponse deleteBusinessTeamById(@PathVariable int CVRNumber, HttpServletRequest request){
+        BusinessTeam foundTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
+        authService.validateUserAccess(foundTeam.getTeamOwner().getEmail(), request);
+        businessTeamRepository.delete(foundTeam);
+        return new BusinessTeamResponse(foundTeam);
+    }
+
 }
