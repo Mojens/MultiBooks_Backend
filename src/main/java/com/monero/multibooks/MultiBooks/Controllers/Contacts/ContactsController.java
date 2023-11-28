@@ -1,9 +1,13 @@
 package com.monero.multibooks.MultiBooks.Controllers.Contacts;
 
+import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsRequest;
+import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsResponse;
+import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Service.ContactsService.ContactsService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin
@@ -16,4 +20,27 @@ public class ContactsController {
     public ContactsController(ContactsService contactsService) {
         this.contactsService = contactsService;
     }
+
+    @GetMapping("/all/{CVRNumber}")
+    public ResponseEntity<ApiResponse> getContacts(@PathVariable int CVRNumber, HttpServletRequest httpRequest){
+        return ResponseEntity.ok(new ApiResponse(contactsService.getContacts(CVRNumber, httpRequest), "Contacts retrieved successfully"));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse> createContact(@RequestBody ContactsRequest contactsRequest, HttpServletRequest httpRequest){
+        return ResponseEntity.ok(new ApiResponse(contactsService.createContact(contactsRequest, httpRequest), "Contact created successfully"));
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<ApiResponse> updateContact( @RequestBody ContactsRequest contactsRequest, HttpServletRequest httpRequest){
+        return ResponseEntity.ok(new ApiResponse(contactsService.updateContact(contactsRequest, httpRequest), "Contact updated successfully"));
+    }
+
+    @DeleteMapping("/delete/{contactId}")
+    public ResponseEntity<ApiResponse> deleteContact(@PathVariable Long contactId, HttpServletRequest httpRequest){
+        ContactsResponse response = contactsService.deleteContact(contactId, httpRequest);
+        return ResponseEntity.ok(new ApiResponse(response, "Contact deleted successfully"));
+    }
+
+
 }
