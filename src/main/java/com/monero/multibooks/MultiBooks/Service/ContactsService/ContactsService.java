@@ -6,9 +6,11 @@ import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
-import com.monero.multibooks.MultiBooks.Repository.ContactsRepository.ContactsRepository;
+import com.monero.multibooks.MultiBooks.Repository.Contacts.ContactsRepository;
 import com.monero.multibooks.MultiBooks.Repository.UserTeam.UserTeamRepository;
 import com.monero.multibooks.MultiBooks.Service.Auth.AuthService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,15 +39,17 @@ public class ContactsService {
     }
 
 
-    public List<ContactsResponse> getContacts(@PathVariable int CVRNumber, HttpServletRequest httpRequest){
-        BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
-        List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
+    public Page<ContactsResponse> getContacts(int CVRNumber, HttpServletRequest httpRequest, Pageable pageable){
+        BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
+        List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
         authService.validateUserTeam(userTeams, httpRequest);
 
-        List<Contacts> contacts = contactsRepository.findAllByBusinessTeam(businessTeam);
-        return contacts.stream().map(ContactsResponse::new).toList();
+        Page<Contacts> contactsPage = contactsRepository.findAllByBusinessTeam(businessTeam, pageable);
+        return contactsPage.map(ContactsResponse::new);
     }
+
 
     public ContactsResponse createContact(@RequestBody ContactsRequest contactsRequest, HttpServletRequest httpRequest){
         BusinessTeam businessTeam = businessTeamRepository.findById(contactsRequest.getBusinessTeamCVRNumber()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
