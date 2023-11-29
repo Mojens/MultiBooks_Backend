@@ -17,6 +17,10 @@ public class Contacts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String companyName;
+    private String companyAddress;
+    private String companyCity;
+    private String companyZipCode;
+    private String companyCountry;
     private int CVRNumber;
     private String email;
     private String phoneNumber;
@@ -29,8 +33,12 @@ public class Contacts {
     @JoinColumn(name = "business_team_id")
     private BusinessTeam businessTeam;
 
-    public Contacts(String companyName, int CVRNumber, String email, String phoneNumber, String website, String attentionPerson, String eInvoiceRecipientType, String paymentTermsMethod, int paymentTermsDays) {
+    public Contacts(String companyName, String companyAddress, String companyCity, String companyZipCode, String companyCountry, int CVRNumber, String email, String phoneNumber, String website, String attentionPerson, String eInvoiceRecipientType, String paymentTermsMethod, int paymentTermsDays) {
         this.companyName = companyName;
+        this.companyAddress = companyAddress;
+        this.companyCity = companyCity;
+        this.companyZipCode = companyZipCode;
+        this.companyCountry = companyCountry;
         this.CVRNumber = CVRNumber;
         this.email = email;
         this.phoneNumber = phoneNumber;

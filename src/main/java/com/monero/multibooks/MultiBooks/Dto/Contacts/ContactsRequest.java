@@ -14,6 +14,10 @@ public class ContactsRequest {
 
     private Long id;
     private String companyName;
+    private String companyAddress;
+    private String companyCity;
+    private String companyZipCode;
+    private String companyCountry;
     @JsonProperty("CVRNumber")
     private int CVRNumber;
     private String email;

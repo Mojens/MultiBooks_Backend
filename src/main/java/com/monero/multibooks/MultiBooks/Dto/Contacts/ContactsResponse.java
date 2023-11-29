@@ -12,6 +12,10 @@ public class ContactsResponse {
 
     private Long id;
     private String companyName;
+    private String companyAddress;
+    private String companyCity;
+    private String companyZipCode;
+    private String companyCountry;
     private int CVRNumber;
     private String email;
     private String phoneNumber;
@@ -25,6 +29,10 @@ public class ContactsResponse {
     public ContactsResponse(Contacts c) {
         this.id = c.getId();
         this.companyName = c.getCompanyName();
+        this.companyAddress = c.getCompanyAddress();
+        this.companyCity = c.getCompanyCity();
+        this.companyZipCode = c.getCompanyZipCode();
+        this.companyCountry = c.getCompanyCountry();
         this.CVRNumber = c.getCVRNumber();
         this.email = c.getEmail();
         this.phoneNumber = c.getPhoneNumber();

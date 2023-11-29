@@ -56,7 +56,12 @@ public class ContactsService {
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
         authService.validateUserTeam(userTeams, httpRequest);
         System.out.println(contactsRequest);
-        Contacts contact = new Contacts(contactsRequest.getCompanyName(), contactsRequest.getCVRNumber(), contactsRequest.getEmail(), contactsRequest.getPhoneNumber(), contactsRequest.getWebsite(), contactsRequest.getAttentionPerson(), contactsRequest.getEInvoiceRecipientType(), contactsRequest.getPaymentTermsMethod(), contactsRequest.getPaymentTermsDays());
+        Contacts contact = new Contacts(contactsRequest.getCompanyName(),
+                contactsRequest.getCompanyAddress(),contactsRequest.getCompanyCity(),
+                contactsRequest.getCompanyZipCode(), contactsRequest.getCompanyCountry(),
+                contactsRequest.getCVRNumber(), contactsRequest.getEmail(), contactsRequest.getPhoneNumber(),
+                contactsRequest.getWebsite(), contactsRequest.getAttentionPerson(), contactsRequest.getEInvoiceRecipientType(),
+                contactsRequest.getPaymentTermsMethod(), contactsRequest.getPaymentTermsDays());
         contact.setBusinessTeam(businessTeam);
         Contacts createdContact = contactsRepository.save(contact);
         return new ContactsResponse(createdContact);
