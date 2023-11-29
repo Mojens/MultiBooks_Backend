@@ -1,4 +1,4 @@
-package com.monero.multibooks.MultiBooks.Service.ContactsService;
+package com.monero.multibooks.MultiBooks.Service.Contacts;
 
 import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsRequest;
 import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsResponse;

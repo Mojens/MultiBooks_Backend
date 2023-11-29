@@ -3,7 +3,7 @@ package com.monero.multibooks.MultiBooks.Controllers.Contacts;
 import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsRequest;
 import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsResponse;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
-import com.monero.multibooks.MultiBooks.Service.ContactsService.ContactsService;
+import com.monero.multibooks.MultiBooks.Service.Contacts.ContactsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
