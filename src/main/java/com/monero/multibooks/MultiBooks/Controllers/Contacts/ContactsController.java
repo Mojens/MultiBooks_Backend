@@ -4,7 +4,6 @@ import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsRequest;
 import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsResponse;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Service.Contacts.ContactsService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +26,7 @@ public class ContactsController {
     public ResponseEntity<ApiResponse> getContacts(@PathVariable int CVRNumber,
                                                    HttpServletRequest httpRequest,
                                                    Pageable pageable){
-        Page<ContactsResponse> contactsPage = contactsService.getContacts(CVRNumber, httpRequest, pageable);
-        return ResponseEntity.ok(new ApiResponse(contactsPage, "Contacts retrieved successfully"));
+        return ResponseEntity.ok(new ApiResponse(contactsService.getContacts(CVRNumber, httpRequest, pageable), "Contacts retrieved successfully"));
     }
 
 

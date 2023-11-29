@@ -39,7 +39,7 @@ public class ContactsService {
     }
 
 
-    public Page<ContactsResponse> getContacts(int CVRNumber, HttpServletRequest httpRequest, Pageable pageable){
+    public Page<ContactsResponse> getContacts(@PathVariable int CVRNumber, HttpServletRequest httpRequest, Pageable pageable){
         BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
