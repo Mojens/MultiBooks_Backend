@@ -56,6 +56,7 @@ public class ProductService {
         Product product = new Product(productRequest.getProductName(), productRequest.getProductCode(),
                 productRequest.getProductAmount(), productRequest.getProductUnit(), productRequest.getProductPriceExclVAT(),
                 productRequest.getProductPriceInclVAT(), productRequest.getProductDescription(), productRequest.getProductAccount());
+        product.setBusinessTeam(businessTeam);
 
         productRepository.save(product);
         return new ProductResponse(product);

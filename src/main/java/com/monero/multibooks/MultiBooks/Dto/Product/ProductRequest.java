@@ -15,6 +15,7 @@ public class ProductRequest {
     private String productName;
     private double productCode;
     private double productAmount;
+    @JsonProperty("productUnit")
     private String productUnit;
     @JsonProperty("productPriceExclVAT")
     private double productPriceExclVAT;
