@@ -29,6 +29,7 @@ public class Contacts {
     private String eInvoiceRecipientType;
     private String paymentTermsMethod;
     private int paymentTermsDays;
+
     @ManyToOne
     @JoinColumn(name = "business_team_id")
     private BusinessTeam businessTeam;

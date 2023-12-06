@@ -1,6 +1,7 @@
 package com.monero.multibooks.MultiBooks.Entities.BusinessTeam;
 
 import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
+import com.monero.multibooks.MultiBooks.Entities.Invoice.Invoice;
 import com.monero.multibooks.MultiBooks.Entities.Product.Product;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
 import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
@@ -60,6 +61,9 @@ public class BusinessTeam {
 
     @OneToMany(mappedBy = "businessTeam")
     private List<Product> products;
+
+    @OneToMany(mappedBy = "businessTeam")
+    private List<Invoice> invoices;
 
     public BusinessTeam(int CVRNumber, String VATNumber, String companyName, String address, String city, int zipCode, String country, String phoneNumber, String email, String website) {
         this.CVRNumber = CVRNumber;

@@ -26,7 +26,6 @@ public class CustomOAuth2AuthenticationEntryPoint implements AuthenticationEntry
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
           throws IOException {
     logger.error(e.getLocalizedMessage(), e);
-    //logger.debug(e.getLocalizedMessage(), e);
     HttpStatus status = HttpStatus.UNAUTHORIZED;
     String errorMessage = "Insufficient authentication details";
     Map<String, String> parameters = new LinkedHashMap<>();
