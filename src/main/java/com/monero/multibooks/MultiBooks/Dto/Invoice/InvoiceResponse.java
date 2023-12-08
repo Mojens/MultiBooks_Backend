@@ -2,6 +2,7 @@ package com.monero.multibooks.MultiBooks.Dto.Invoice;
 
 import com.monero.multibooks.MultiBooks.Dto.ProductToSale.ProductToSaleResponse;
 import com.monero.multibooks.MultiBooks.Entities.Invoice.Invoice;
+import com.monero.multibooks.MultiBooks.Entities.Invoice.InvoiceStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class InvoiceResponse {
     private Instant invoiceDate;
     private double subTotal;
     private double total;
+    private InvoiceStatus status;
     private List<ProductToSaleResponse> productToSale;
 
     public InvoiceResponse(Invoice c) {
@@ -29,6 +31,7 @@ public class InvoiceResponse {
         this.invoiceDate = c.getInvoiceDate();
         this.subTotal = c.getSubTotal();
         this.total = c.getTotal();
+        this.status = c.getStatus();
         this.productToSale = c.getProductToSales().stream().map(ProductToSaleResponse::new).toList();
     }
 }
