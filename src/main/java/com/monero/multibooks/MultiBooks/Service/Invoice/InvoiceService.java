@@ -2,7 +2,6 @@ package com.monero.multibooks.MultiBooks.Service.Invoice;
 
 import com.monero.multibooks.MultiBooks.DomainService.Auth.AuthDomainService;
 import com.monero.multibooks.MultiBooks.DomainService.Invoice.InvoiceDomainService;
-import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceCreateRequest;
 import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceFillRequest;
 import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceResponse;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
@@ -66,8 +65,8 @@ public class InvoiceService {
         return invoicePage.map(InvoiceResponse::new);
     }
 
-    public void createInvoice(@RequestBody InvoiceCreateRequest request, HttpServletRequest httpRequest) {
-        BusinessTeam businessTeam = businessTeamRepository.findById(request.getTeamInvoiceCvrNumber())
+    public void createInvoice(@PathVariable int teamInvoiceCvrNumber, HttpServletRequest httpRequest) {
+        BusinessTeam businessTeam = businessTeamRepository.findById(teamInvoiceCvrNumber)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
         authDomainService.validateUserTeam(userTeams, httpRequest);

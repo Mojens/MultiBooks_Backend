@@ -1,6 +1,5 @@
 package com.monero.multibooks.MultiBooks.Controllers.Invoice;
 
-import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceCreateRequest;
 import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceFillRequest;
 import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceResponse;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
@@ -36,9 +35,9 @@ public class InvoiceController {
         return ResponseEntity.ok(new ApiResponse(invoices, "Invoices retrieved successfully"));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse> createInvoice(@RequestBody InvoiceCreateRequest request, HttpServletRequest httpRequest) {
-        invoiceService.createInvoice(request, httpRequest);
+    @PostMapping("/create/{teamInvoiceCvrNumber}")
+    public ResponseEntity<ApiResponse> createInvoice(@PathVariable int teamInvoiceCvrNumber, HttpServletRequest httpRequest) {
+        invoiceService.createInvoice(teamInvoiceCvrNumber, httpRequest);
         return ResponseEntity.ok(new ApiResponse(true, "Invoice created successfully"));
     }
 
