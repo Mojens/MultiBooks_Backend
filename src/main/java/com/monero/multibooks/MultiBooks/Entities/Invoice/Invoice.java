@@ -42,7 +42,7 @@ public class Invoice {
     @JoinColumn(name = "business_team_id")
     private BusinessTeam businessTeam;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "invoice_id")
     private List<ProductToSale> productToSales;
 }

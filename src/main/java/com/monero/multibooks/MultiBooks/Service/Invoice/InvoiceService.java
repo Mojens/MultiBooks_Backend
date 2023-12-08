@@ -65,7 +65,7 @@ public class InvoiceService {
         return invoicePage.map(InvoiceResponse::new);
     }
 
-    public void createInvoice(@PathVariable int teamInvoiceCvrNumber, HttpServletRequest httpRequest) {
+    public InvoiceResponse createInvoice(@PathVariable int teamInvoiceCvrNumber, HttpServletRequest httpRequest) {
         BusinessTeam businessTeam = businessTeamRepository.findById(teamInvoiceCvrNumber)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
@@ -73,7 +73,8 @@ public class InvoiceService {
         Invoice invoiceToCreate = Invoice.builder()
                 .businessTeam(businessTeam)
                 .build();
-        invoiceRepository.save(invoiceToCreate);
+        Invoice invoiceCreated = invoiceRepository.save(invoiceToCreate);
+        return new InvoiceResponse(invoiceCreated);
     }
 
     public InvoiceResponse fillInvoice(@RequestBody InvoiceFillRequest request, HttpServletRequest httpRequest) {
@@ -92,7 +93,7 @@ public class InvoiceService {
         return new InvoiceResponse(foundInvoice);
     }
 
-    public InvoiceResponse editInvoice(@RequestBody InvoiceFillRequest request, HttpServletRequest httpRequest){
+    public InvoiceResponse editInvoice(@RequestBody InvoiceFillRequest request, HttpServletRequest httpRequest) {
         Invoice foundInvoice = invoiceRepository.findById(request.getInvoiceNumber())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invoice not found"));
         BusinessTeam businessTeam = foundInvoice.getBusinessTeam();

@@ -32,6 +32,8 @@ public class InvoiceResponse {
         this.subTotal = c.getSubTotal();
         this.total = c.getTotal();
         this.status = c.getStatus();
-        this.productToSale = c.getProductToSales().stream().map(ProductToSaleResponse::new).toList();
+        if (c.getProductToSales() != null) {
+            this.productToSale = c.getProductToSales().stream().map(ProductToSaleResponse::new).toList();
+        }
     }
 }

@@ -17,6 +17,7 @@ import javax.persistence.*;
 public class ProductToSale {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "unit")
     private String productUnit;

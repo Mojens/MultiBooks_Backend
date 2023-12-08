@@ -17,5 +17,5 @@ public class ProductToSaleRequest {
     private double productDiscount;
     private double productPriceExclVAT;
     private double productPriceAfterDiscount;
-    private Long invoiceNumber;
+    private Long productId;
 }
