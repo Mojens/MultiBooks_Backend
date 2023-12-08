@@ -1,5 +1,6 @@
 package com.monero.multibooks.MultiBooks.Service.Product;
 
+import com.monero.multibooks.MultiBooks.DomainService.Auth.AuthDomainService;
 import com.monero.multibooks.MultiBooks.Dto.Product.ProductRequest;
 import com.monero.multibooks.MultiBooks.Dto.Product.ProductResponse;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
@@ -8,7 +9,6 @@ import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
 import com.monero.multibooks.MultiBooks.Repository.Product.ProductRepository;
 import com.monero.multibooks.MultiBooks.Repository.UserTeam.UserTeamRepository;
-import com.monero.multibooks.MultiBooks.Service.Auth.AuthService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,12 +27,12 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final BusinessTeamRepository businessTeamRepository;
     private final UserTeamRepository userTeamRepository;
-    private final AuthService authService;
+    private final AuthDomainService authDomainService;
 
-    public ProductService(ProductRepository productRepository, AuthService authService,
+    public ProductService(ProductRepository productRepository, AuthDomainService authDomainService,
                           BusinessTeamRepository businessTeamRepository, UserTeamRepository userTeamRepository) {
         this.productRepository = productRepository;
-        this.authService = authService;
+        this.authDomainService = authDomainService;
         this.businessTeamRepository = businessTeamRepository;
         this.userTeamRepository = userTeamRepository;
     }
@@ -42,7 +42,7 @@ public class ProductService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
-        authService.validateUserTeam(userTeams, httpRequest);
+        authDomainService.validateUserTeam(userTeams, httpRequest);
 
         Page<Product> productPage = productRepository.findAllByBusinessTeam(businessTeam, pageable);
         return productPage.map(ProductResponse::new);
@@ -51,7 +51,7 @@ public class ProductService {
     public ProductResponse createProduct(@RequestBody ProductRequest productRequest, HttpServletRequest httpRequest){
         BusinessTeam businessTeam = businessTeamRepository.findById(productRequest.getBusinessCVRNumber()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
-        authService.validateUserTeam(userTeams, httpRequest);
+        authDomainService.validateUserTeam(userTeams, httpRequest);
 
         Product product = new Product(productRequest.getProductName(), productRequest.getProductCode(),
                 productRequest.getProductAmount(), productRequest.getProductUnit(), productRequest.getProductPriceExclVAT(),
@@ -66,7 +66,7 @@ public class ProductService {
         Product foundProduct = productRepository.findById(productId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
         BusinessTeam businessTeam = foundProduct.getBusinessTeam();
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
-        authService.validateUserTeam(userTeams, httpRequest);
+        authDomainService.validateUserTeam(userTeams, httpRequest);
         return new ProductResponse(foundProduct);
     }
 
@@ -74,7 +74,7 @@ public class ProductService {
         Product foundProduct = productRepository.findById(request.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
         BusinessTeam businessTeam = foundProduct.getBusinessTeam();
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
-        authService.validateUserTeam(userTeams, httpRequest);
+        authDomainService.validateUserTeam(userTeams, httpRequest);
 
         foundProduct.setProductName(request.getProductName());
         foundProduct.setProductCode(request.getProductCode());
@@ -93,7 +93,7 @@ public class ProductService {
         Product foundProduct = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
         BusinessTeam businessTeam = foundProduct.getBusinessTeam();
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
-        authService.validateUserTeam(userTeams, httpRequest);
+        authDomainService.validateUserTeam(userTeams, httpRequest);
 
         productRepository.delete(foundProduct);
         return new ProductResponse(foundProduct);

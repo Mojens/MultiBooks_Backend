@@ -42,11 +42,20 @@ public class BusinessTeamService {
 
     public BusinessTeamResponse createBusinessTeam(@RequestBody BusinessTeamRequest request) {
         User foundUser = userRepository.findById(request.getOwnerEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        BusinessTeam createdBusinessTeam = businessTeamRepository.save(new BusinessTeam(request.getCVRNumber(),
-                request.getVATNumber(), request.getCompanyName(), request.getAddress(), request.getCity(),
-                request.getZipCode(), request.getCountry(), request.getPhoneNumber(), request.getEmail(),
-                request.getWebsite()));
-        createdBusinessTeam.setTeamOwner(foundUser);
+        BusinessTeam createdBusinessTeam = BusinessTeam.builder()
+                .CVRNumber(request.getCVRNumber())
+                .VATNumber(request.getVATNumber())
+                .companyName(request.getCompanyName())
+                .address(request.getAddress())
+                .city(request.getCity())
+                .zipCode(request.getZipCode())
+                .country(request.getCountry())
+                .phoneNumber(request.getPhoneNumber())
+                .email(request.getEmail())
+                .website(request.getWebsite())
+                .teamOwner(foundUser)
+                .build();
+
         BusinessTeam businessTeam = businessTeamRepository.save(createdBusinessTeam);
 
         List<BusinessTeam> businessTeams = foundUser.getBusinessTeams();
@@ -74,14 +83,14 @@ public class BusinessTeamService {
         return new ApiResponse(null, "User has been successfully added to business team");
     }
 
-    public ApiResponse addUserToBusinessTeam(String mail, int CVRNumber){
+    public ApiResponse addUserToBusinessTeam(String mail, int CVRNumber) {
         User foundUser = userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         BusinessTeam foundBusinessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
         if (!userTeamRepository.existsByBusinessTeam(foundBusinessTeam)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Business team is not Registered");
         }
         Optional<UserTeam> userTeam = userTeamRepository.findByBusinessTeamAndUser(foundBusinessTeam, foundUser);
-        if (userTeam.isPresent()){
+        if (userTeam.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already in business team");
         }
         List<BusinessTeam> businessTeams = foundUser.getBusinessTeams();
@@ -101,13 +110,13 @@ public class BusinessTeamService {
         return userTeams.stream().map(UserTeam::getBusinessTeam).map(BusinessTeamResponse::new).toList();
     }
 
-    public BusinessTeamResponse getBusinessTeamById(@PathVariable int CVRNumber, HttpServletRequest request){
+    public BusinessTeamResponse getBusinessTeamById(@PathVariable int CVRNumber, HttpServletRequest request) {
         BusinessTeam foundTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
         authService.validateUserAccess(foundTeam.getEmail(), request);
         return new BusinessTeamResponse(foundTeam);
     }
 
-    public BusinessTeamResponse deleteBusinessTeamById(@PathVariable int CVRNumber, HttpServletRequest request){
+    public BusinessTeamResponse deleteBusinessTeamById(@PathVariable int CVRNumber, HttpServletRequest request) {
         BusinessTeam foundTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
         authService.validateUserAccess(foundTeam.getTeamOwner().getEmail(), request);
         businessTeamRepository.delete(foundTeam);

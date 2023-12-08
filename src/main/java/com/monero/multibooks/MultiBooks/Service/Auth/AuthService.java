@@ -1,17 +1,15 @@
 package com.monero.multibooks.MultiBooks.Service.Auth;
 
+import com.monero.multibooks.MultiBooks.DomainService.Auth.AuthDomainService;
 import com.monero.multibooks.MultiBooks.Dto.Auth.ResetPasswordRequest;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Entities.Auth.ResetToken;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
-import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import com.monero.multibooks.MultiBooks.Repository.Auth.ResetTokenRepository;
 import com.monero.multibooks.MultiBooks.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +21,6 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
@@ -43,15 +40,15 @@ public class AuthService {
 
     private final ResetTokenRepository resetTokenRepository;
     private final UserRepository userRepository;
-    private final JwtDecoder jwtDecoder;
+    private final AuthDomainService authDomainService;
 
 
     public AuthService(ResetTokenRepository resetTokenRepository,
                        UserRepository userRepository,
-                       JwtDecoder jwtDecoder) {
+                       AuthDomainService authDomainService) {
         this.resetTokenRepository = resetTokenRepository;
         this.userRepository = userRepository;
-        this.jwtDecoder = jwtDecoder;
+        this.authDomainService = authDomainService;
     }
 
     public void sendPasswordResetEmail(String toEmail, String resetToken) {
@@ -153,7 +150,7 @@ public class AuthService {
 
 
     public void validateUserAccess(String mail, HttpServletRequest request) {
-        String loggedInUserEmail = extractUserEmailFromToken(request);
+        String loggedInUserEmail = authDomainService.extractUserEmailFromToken(request);
         try {
             User loggedInUser = userRepository.findById(loggedInUserEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
             if (!loggedInUser.getUsername().equalsIgnoreCase(mail)) {
@@ -164,31 +161,6 @@ public class AuthService {
         }
     }
 
-    public String extractToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
-
-    private String extractUserEmailFromToken(HttpServletRequest request) {
-        String token = extractToken(request);
-        Jwt jwt = jwtDecoder.decode(token);
-        return jwt.getSubject();
-    }
-
-    public void validateUserTeam(List<UserTeam> userTeams, HttpServletRequest request) {
-        String loggedInUserEmail = extractUserEmailFromToken(request);
-
-        boolean isUserPartOfTeam = userTeams.stream()
-                .anyMatch(userTeam -> userTeam.getUser().getEmail().equalsIgnoreCase(loggedInUserEmail));
-
-        if (!isUserPartOfTeam) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
-        }
-    }
 
     @Scheduled(cron = "0 0 0 * * *")
     public void cleanupExpiredTokens() {

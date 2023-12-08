@@ -10,4 +10,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ProductToSaleRequest {
+
+    private Long productToSaleId;
+    private String productUnit;
+    private double productAmount;
+    private double productDiscount;
+    private double productPriceExclVAT;
+    private double productPriceAfterDiscount;
+    private Long invoiceNumber;
 }

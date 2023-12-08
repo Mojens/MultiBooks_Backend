@@ -2,18 +2,19 @@ package com.monero.multibooks.MultiBooks.Entities.Invoice;
 
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.ProductToSale.ProductToSale;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 public class Invoice {
@@ -26,7 +27,16 @@ public class Invoice {
     private Instant invoiceDate;
     private double subTotal;
     private double total;
-    private double discount;
+
+    @CreationTimestamp
+    private LocalDateTime created;
+
+    @UpdateTimestamp
+    private LocalDateTime edited;
+    private String editedBy;
+
+    @Enumerated(EnumType.STRING)
+    private InvoiceStatus status;
 
     @ManyToOne
     @JoinColumn(name = "business_team_id")
@@ -35,7 +45,4 @@ public class Invoice {
     @OneToMany
     @JoinColumn(name = "invoice_id")
     private List<ProductToSale> productToSales;
-
-    public Invoice() {
-    }
 }

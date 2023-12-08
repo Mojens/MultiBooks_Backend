@@ -19,5 +19,6 @@ public class InvoiceFillRequest {
     private Instant invoiceDate;
     private double subTotal;
     private double total;
-    private double discount;
+    private int statusCode;
+    private String EditedBy;
 }
