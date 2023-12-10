@@ -5,9 +5,11 @@ import com.monero.multibooks.MultiBooks.DomainService.Invoice.InvoiceDomainServi
 import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceFillRequest;
 import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceResponse;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
+import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import com.monero.multibooks.MultiBooks.Entities.Invoice.Invoice;
 import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
+import com.monero.multibooks.MultiBooks.Repository.Contacts.ContactsRepository;
 import com.monero.multibooks.MultiBooks.Repository.Invoice.InvoiceRepository;
 import com.monero.multibooks.MultiBooks.Repository.ProductToSale.ProductToSaleRepository;
 import com.monero.multibooks.MultiBooks.Repository.UserTeam.UserTeamRepository;
@@ -33,19 +35,22 @@ public class InvoiceService {
     private final ProductToSaleRepository productToSaleRepository;
     private final InvoiceDomainService invoiceDomainService;
     private final AuthDomainService authDomainService;
+    private final ContactsRepository contactsRepository;
 
     public InvoiceService(InvoiceRepository invoiceRepository,
                           BusinessTeamRepository businessTeamRepository,
                           UserTeamRepository userTeamRepository,
                           ProductToSaleRepository productToSaleRepository,
                           InvoiceDomainService invoiceDomainService,
-                          AuthDomainService authDomainService) {
+                          AuthDomainService authDomainService,
+                          ContactsRepository contactsRepository) {
         this.invoiceRepository = invoiceRepository;
         this.businessTeamRepository = businessTeamRepository;
         this.userTeamRepository = userTeamRepository;
         this.productToSaleRepository = productToSaleRepository;
         this.invoiceDomainService = invoiceDomainService;
         this.authDomainService = authDomainService;
+        this.contactsRepository = contactsRepository;
     }
 
     public InvoiceResponse getInvoice(@PathVariable Long invoiceNumber, HttpServletRequest httpRequest) {
@@ -83,11 +88,14 @@ public class InvoiceService {
         BusinessTeam businessTeam = foundInvoice.getBusinessTeam();
         List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(businessTeam);
         authDomainService.validateUserTeam(userTeams, httpRequest);
+        Contacts contact = contactsRepository.findById(request.getContactId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact not found"));
         foundInvoice.setInvoiceComment(request.getInvoiceComment());
         foundInvoice.setInvoiceTitle(request.getInvoiceTitle());
         foundInvoice.setInvoiceDate(request.getInvoiceDate());
         foundInvoice.setSubTotal(request.getSubTotal());
         foundInvoice.setTotal(request.getTotal());
+        foundInvoice.setContact(contact);
         foundInvoice.setStatus(invoiceDomainService.getStatus(request.getStatusCode()));
         invoiceRepository.save(foundInvoice);
         return new InvoiceResponse(foundInvoice);

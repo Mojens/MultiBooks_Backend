@@ -1,6 +1,7 @@
 package com.monero.multibooks.MultiBooks.Entities.Invoice;
 
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
+import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import com.monero.multibooks.MultiBooks.Entities.ProductToSale.ProductToSale;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,6 +42,10 @@ public class Invoice {
     @ManyToOne
     @JoinColumn(name = "business_team_id")
     private BusinessTeam businessTeam;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Contacts contact;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "invoice_id")

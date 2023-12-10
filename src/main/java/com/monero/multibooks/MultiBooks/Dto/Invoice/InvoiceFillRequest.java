@@ -21,4 +21,5 @@ public class InvoiceFillRequest {
     private double total;
     private int statusCode;
     private String EditedBy;
+    private Long contactId;
 }

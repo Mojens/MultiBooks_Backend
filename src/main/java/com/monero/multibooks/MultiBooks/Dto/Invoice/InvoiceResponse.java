@@ -1,5 +1,6 @@
 package com.monero.multibooks.MultiBooks.Dto.Invoice;
 
+import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsResponse;
 import com.monero.multibooks.MultiBooks.Dto.ProductToSale.ProductToSaleResponse;
 import com.monero.multibooks.MultiBooks.Entities.Invoice.Invoice;
 import com.monero.multibooks.MultiBooks.Entities.Invoice.InvoiceStatus;
@@ -22,6 +23,7 @@ public class InvoiceResponse {
     private double subTotal;
     private double total;
     private InvoiceStatus status;
+    private ContactsResponse contact;
     private List<ProductToSaleResponse> productToSale;
 
     public InvoiceResponse(Invoice c) {
@@ -34,6 +36,9 @@ public class InvoiceResponse {
         this.status = c.getStatus();
         if (c.getProductToSales() != null) {
             this.productToSale = c.getProductToSales().stream().map(ProductToSaleResponse::new).toList();
+        }
+        if (c.getContact() != null) {
+            this.contact = new ContactsResponse(c.getContact());
         }
     }
 }

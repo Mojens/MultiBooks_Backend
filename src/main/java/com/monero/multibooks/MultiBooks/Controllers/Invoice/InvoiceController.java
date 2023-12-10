@@ -35,6 +35,7 @@ public class InvoiceController {
         return ResponseEntity.ok(new ApiResponse(invoices, "Invoices retrieved successfully"));
     }
 
+
     @PostMapping("/create/{teamInvoiceCvrNumber}")
     public ResponseEntity<ApiResponse> createInvoice(@PathVariable int teamInvoiceCvrNumber, HttpServletRequest httpRequest) {
         InvoiceResponse invoice = invoiceService.createInvoice(teamInvoiceCvrNumber, httpRequest);
