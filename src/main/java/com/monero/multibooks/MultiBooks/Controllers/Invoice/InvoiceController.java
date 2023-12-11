@@ -30,8 +30,8 @@ public class InvoiceController {
     }
 
     @GetMapping("/all/{CVRNumber}")
-    public ResponseEntity<ApiResponse> getInvoices(@PathVariable Long CVRNumber, HttpServletRequest httpRequest, Pageable pageable) {
-        Page<InvoiceResponse> invoices = invoiceService.getInvoices(CVRNumber.intValue(), pageable, httpRequest);
+    public ResponseEntity<ApiResponse> getInvoices(@PathVariable int CVRNumber, HttpServletRequest httpRequest, Pageable pageable) {
+        Page<InvoiceResponse> invoices = invoiceService.getInvoices(CVRNumber, pageable, httpRequest);
         return ResponseEntity.ok(new ApiResponse(invoices, "Invoices retrieved successfully"));
     }
 

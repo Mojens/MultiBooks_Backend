@@ -27,6 +27,7 @@ public class Invoice {
     private String invoiceTitle;
     private Instant invoiceDate;
     private double subTotal;
+    private double subTotalWithVat;
     private double total;
 
     @CreationTimestamp

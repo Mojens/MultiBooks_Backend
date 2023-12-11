@@ -22,6 +22,7 @@ public class InvoiceResponse {
     private Instant invoiceDate;
     private double subTotal;
     private double total;
+    private double subTotalWithVat;
     private InvoiceStatus status;
     private ContactsResponse contact;
     private List<ProductToSaleResponse> productToSale;
@@ -34,6 +35,7 @@ public class InvoiceResponse {
         this.subTotal = c.getSubTotal();
         this.total = c.getTotal();
         this.status = c.getStatus();
+        this.subTotalWithVat = c.getSubTotalWithVat();
         if (c.getProductToSales() != null) {
             this.productToSale = c.getProductToSales().stream().map(ProductToSaleResponse::new).toList();
         }

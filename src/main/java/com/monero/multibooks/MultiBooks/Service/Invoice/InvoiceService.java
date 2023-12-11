@@ -96,6 +96,7 @@ public class InvoiceService {
         foundInvoice.setSubTotal(request.getSubTotal());
         foundInvoice.setTotal(request.getTotal());
         foundInvoice.setContact(contact);
+        foundInvoice.setSubTotalWithVat(request.getSubTotal() * 1.25);
         foundInvoice.setStatus(invoiceDomainService.getStatus(request.getStatusCode()));
         invoiceRepository.save(foundInvoice);
         return new InvoiceResponse(foundInvoice);
