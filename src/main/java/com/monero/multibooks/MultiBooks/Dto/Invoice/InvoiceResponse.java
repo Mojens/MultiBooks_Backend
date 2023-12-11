@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -20,6 +21,7 @@ public class InvoiceResponse {
     private String invoiceComment;
     private String invoiceTitle;
     private Instant invoiceDate;
+    private LocalDateTime createdDate;
     private double subTotal;
     private double total;
     private double subTotalWithVat;
@@ -32,6 +34,7 @@ public class InvoiceResponse {
         this.invoiceComment = c.getInvoiceComment();
         this.invoiceTitle = c.getInvoiceTitle();
         this.invoiceDate = c.getInvoiceDate();
+        this.createdDate = c.getCreated();
         this.subTotal = c.getSubTotal();
         this.total = c.getTotal();
         this.status = c.getStatus();

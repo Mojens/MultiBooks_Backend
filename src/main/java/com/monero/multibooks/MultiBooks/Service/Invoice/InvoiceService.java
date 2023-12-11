@@ -144,6 +144,7 @@ public class InvoiceService {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void cleanupExpiredTokens() {
+        // Mangler logik for at den skal slette hver 48 timer de der ligger i draft
         Instant now = Instant.now();
         List<Invoice> invoices = invoiceRepository.findAllByStatusIs(invoiceDomainService.getStatus(0));
 
