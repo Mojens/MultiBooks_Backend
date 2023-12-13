@@ -21,6 +21,9 @@ public class BusinessTeamResponse {
     private String email;
     private String website;
     private String ownerEmail;
+    private String accNumber;
+    private int regNumber;
+    private String bankName;
 
     public BusinessTeamResponse(BusinessTeam businessTeam) {
         this.CVRNumber = businessTeam.getCVRNumber();
@@ -34,5 +37,9 @@ public class BusinessTeamResponse {
         this.email = businessTeam.getEmail();
         this.website = businessTeam.getWebsite();
         this.ownerEmail = businessTeam.getTeamOwner().getEmail();
+        this.accNumber = businessTeam.getAccNumber();
+        this.regNumber = businessTeam.getRegNumber();
+        this.bankName = businessTeam.getBankName();
+
     }
 }

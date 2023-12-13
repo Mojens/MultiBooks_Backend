@@ -24,4 +24,7 @@ public class BusinessTeamRequest {
     String email;
     String website;
     String ownerEmail;
+    String accNumber;
+    int regNumber;
+    String bankName;
 }

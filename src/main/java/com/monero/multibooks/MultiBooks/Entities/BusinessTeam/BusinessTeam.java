@@ -65,6 +65,10 @@ public class BusinessTeam {
     @OneToMany(mappedBy = "businessTeam")
     private List<Invoice> invoices;
 
+    private String accNumber;
+    private int regNumber;
+    private String bankName;
+
     public BusinessTeam(int CVRNumber, String VATNumber, String companyName, String address, String city, int zipCode, String country, String phoneNumber, String email, String website) {
         this.CVRNumber = CVRNumber;
         this.VATNumber = VATNumber;

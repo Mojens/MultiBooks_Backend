@@ -54,6 +54,9 @@ public class BusinessTeamService {
                 .email(request.getEmail())
                 .website(request.getWebsite())
                 .teamOwner(foundUser)
+                .accNumber(request.getAccNumber())
+                .regNumber(request.getRegNumber())
+                .bankName(request.getBankName())
                 .build();
 
         BusinessTeam businessTeam = businessTeamRepository.save(createdBusinessTeam);
@@ -120,6 +123,26 @@ public class BusinessTeamService {
         BusinessTeam foundTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
         authService.validateUserAccess(foundTeam.getTeamOwner().getEmail(), request);
         businessTeamRepository.delete(foundTeam);
+        return new BusinessTeamResponse(foundTeam);
+    }
+
+    public BusinessTeamResponse editBusinessTeamById(@RequestBody BusinessTeamRequest request, HttpServletRequest httpServletRequest) {
+        BusinessTeam foundTeam = businessTeamRepository.findById(request.getCVRNumber()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
+        authService.validateUserAccess(foundTeam.getTeamOwner().getEmail(), httpServletRequest);
+        foundTeam.setCVRNumber(request.getCVRNumber());
+        foundTeam.setVATNumber(request.getVATNumber());
+        foundTeam.setCompanyName(request.getCompanyName());
+        foundTeam.setAddress(request.getAddress());
+        foundTeam.setCity(request.getCity());
+        foundTeam.setZipCode(request.getZipCode());
+        foundTeam.setCountry(request.getCountry());
+        foundTeam.setPhoneNumber(request.getPhoneNumber());
+        foundTeam.setEmail(request.getEmail());
+        foundTeam.setWebsite(request.getWebsite());
+        foundTeam.setAccNumber(request.getAccNumber());
+        foundTeam.setRegNumber(request.getRegNumber());
+        foundTeam.setBankName(request.getBankName());
+        businessTeamRepository.save(foundTeam);
         return new BusinessTeamResponse(foundTeam);
     }
 

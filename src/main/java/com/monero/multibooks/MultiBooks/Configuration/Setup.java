@@ -48,6 +48,9 @@ public class Setup implements ApplicationRunner {
                 .phoneNumber("12345678")
                 .email("gg@hotmail.com")
                 .website("www.monero.dk")
+                .accNumber("1234567890")
+                .regNumber(1234)
+                .bankName("Danske Bank")
                 .teamOwner(user3)
                 .build();
         businessTeamRepository.save(team);
@@ -65,6 +68,9 @@ public class Setup implements ApplicationRunner {
                 .phoneNumber("12345678")
                 .email("oo@hotmail.com")
                 .website("www.konero.dk")
+                .accNumber("1234567890")
+                .regNumber(1234)
+                .bankName("Danske Bank")
                 .teamOwner(user2)
                 .build();
         businessTeamRepository.save(team2);
