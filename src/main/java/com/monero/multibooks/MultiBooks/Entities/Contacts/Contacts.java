@@ -1,9 +1,11 @@
 package com.monero.multibooks.MultiBooks.Entities.Contacts;
 
+import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCredit;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,4 +36,7 @@ public class Contacts {
     @JoinColumn(name = "business_team_id")
     private BusinessTeam businessTeam;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "contacts_id")
+    private List<AccountingRecordCredit> accountingRecordsCredit;
 }
