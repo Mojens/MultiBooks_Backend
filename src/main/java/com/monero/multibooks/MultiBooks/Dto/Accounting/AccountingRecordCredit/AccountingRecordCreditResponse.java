@@ -1,6 +1,7 @@
 package com.monero.multibooks.MultiBooks.Dto.Accounting.AccountingRecordCredit;
 
 import com.monero.multibooks.MultiBooks.Dto.Accounting.AccountingRecord.AccountingRecordResponse;
+import com.monero.multibooks.MultiBooks.Dto.BusinessTeam.BusinessTeamResponse;
 import com.monero.multibooks.MultiBooks.Dto.Contacts.ContactsResponse;
 import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCredit;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class AccountingRecordCreditResponse {
     private int subTotalVat;
     private int subTotalNoVat;
     private int total;
+    private BusinessTeamResponse businessTeam;
     private ContactsResponse supplier;
     private List<AccountingRecordResponse> accountingRecords;
 
@@ -35,6 +37,9 @@ public class AccountingRecordCreditResponse {
         this.subTotalVat = a.getSubTotalVat();
         this.subTotalNoVat = a.getSubTotalNoVat();
         this.total = a.getTotal();
+        if (a.getBusinessTeam() != null) {
+            this.businessTeam = new BusinessTeamResponse(a.getBusinessTeam());
+        }
         if (a.getSupplier() != null) {
             this.supplier = new ContactsResponse(a.getSupplier());
         }

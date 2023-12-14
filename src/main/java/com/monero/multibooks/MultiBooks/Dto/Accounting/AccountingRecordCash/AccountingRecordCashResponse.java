@@ -1,6 +1,7 @@
 package com.monero.multibooks.MultiBooks.Dto.Accounting.AccountingRecordCash;
 
 import com.monero.multibooks.MultiBooks.Dto.Accounting.AccountingRecord.AccountingRecordResponse;
+import com.monero.multibooks.MultiBooks.Dto.BusinessTeam.BusinessTeamResponse;
 import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCash;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class AccountingRecordCashResponse {
     private int subTotalVat;
     private int subTotalNoVat;
     private int total;
+    private BusinessTeamResponse businessTeam;
     private List<AccountingRecordResponse> accountingRecords;
 
     public AccountingRecordCashResponse(AccountingRecordCash a){
@@ -31,6 +33,9 @@ public class AccountingRecordCashResponse {
         this.subTotalVat = a.getSubTotalVat();
         this.subTotalNoVat = a.getSubTotalNoVat();
         this.total = a.getTotal();
+        if(a.getBusinessTeam() != null){
+            this.businessTeam = new BusinessTeamResponse(a.getBusinessTeam());
+        }
         if(a.getAccountingRecords() != null){
             this.accountingRecords = a.getAccountingRecords().stream().map(AccountingRecordResponse::new).toList();
         }

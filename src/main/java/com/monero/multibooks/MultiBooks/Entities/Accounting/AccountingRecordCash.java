@@ -1,5 +1,6 @@
 package com.monero.multibooks.MultiBooks.Entities.Accounting;
 
+import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,4 +27,8 @@ public class AccountingRecordCash {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "accounting_record_cash_id")
     private List<AccountingRecord> accountingRecords;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private BusinessTeam businessTeam;
 }

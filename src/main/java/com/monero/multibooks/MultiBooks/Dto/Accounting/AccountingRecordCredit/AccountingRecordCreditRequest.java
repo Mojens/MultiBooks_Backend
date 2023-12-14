@@ -1,5 +1,6 @@
 package com.monero.multibooks.MultiBooks.Dto.Accounting.AccountingRecordCredit;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,4 +23,6 @@ public class AccountingRecordCreditRequest {
     int subTotalVat;
     int subTotalNoVat;
     int total;
+    @JsonProperty("businessTeamCVRNumber")
+    int businessTeamCVRNumber;
 }

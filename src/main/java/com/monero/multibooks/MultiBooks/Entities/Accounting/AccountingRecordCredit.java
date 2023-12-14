@@ -1,5 +1,6 @@
 package com.monero.multibooks.MultiBooks.Entities.Accounting;
 
+import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
@@ -33,8 +34,13 @@ public class AccountingRecordCredit {
     @JoinColumn(name = "contact_id")
     private Contacts supplier;
 
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private BusinessTeam businessTeam;
+
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     @JoinColumn(name = "accounting_record_credit_id")
     private List<AccountingRecord> accountingRecords;
+
 }

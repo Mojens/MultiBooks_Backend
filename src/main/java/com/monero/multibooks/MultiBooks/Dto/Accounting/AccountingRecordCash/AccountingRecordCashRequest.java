@@ -22,5 +22,7 @@ public class AccountingRecordCashRequest {
     int subTotalVat;
     int subTotalNoVat;
     int total;
+    @JsonProperty("businessTeamCVRNumber")
+    int businessTeamCVRNumber;
 }
 
