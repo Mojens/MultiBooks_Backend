@@ -5,8 +5,10 @@ import com.monero.multibooks.MultiBooks.Dto.Accounting.AccountingRecordCredit.Ac
 import com.monero.multibooks.MultiBooks.Dto.Accounting.AccountingRecordCredit.AccountingRecordCreditResponse;
 import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCredit;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
+import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import com.monero.multibooks.MultiBooks.Repository.Accounting.AccountingRecordCreditRepository;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
+import com.monero.multibooks.MultiBooks.Repository.Contacts.ContactsRepository;
 import com.monero.multibooks.MultiBooks.Service.UserTeam.UserTeamService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,15 +27,18 @@ public class AccountingRecordCreditService {
     private final BusinessTeamRepository businessTeamRepository;
     private final UserTeamService userTeamService;
     private final AuthDomainService authDomainService;
+    private final ContactsRepository contactsRepository;
 
     public AccountingRecordCreditService(AccountingRecordCreditRepository accountingRecordCreditRepository,
                                          BusinessTeamRepository businessTeamRepository,
                                          UserTeamService userTeamService,
-                                         AuthDomainService authDomainService) {
+                                         AuthDomainService authDomainService,
+                                         ContactsRepository contactsRepository) {
         this.accountingRecordCreditRepository = accountingRecordCreditRepository;
         this.businessTeamRepository = businessTeamRepository;
         this.userTeamService = userTeamService;
         this.authDomainService = authDomainService;
+        this.contactsRepository = contactsRepository;
     }
 
 
@@ -73,6 +78,8 @@ public class AccountingRecordCreditService {
         BusinessTeam businessTeam = businessTeamRepository.findById(request.getBusinessTeamCVRNumber())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
+        Contacts supplier = contactsRepository.findById(request.getSupplierId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
         AccountingRecordCredit accountingRecordCredit = AccountingRecordCredit.builder()
                 .businessTeam(businessTeam)
                 .total(request.getTotal())
@@ -82,6 +89,7 @@ public class AccountingRecordCreditService {
                 .valuta(request.getValuta())
                 .subTotalVat(request.getSubTotalVat())
                 .subTotalNoVat(request.getSubTotalNoVat())
+                .supplier(supplier)
                 .build();
         accountingRecordCreditRepository.save(accountingRecordCredit);
         return new AccountingRecordCreditResponse(accountingRecordCredit);
