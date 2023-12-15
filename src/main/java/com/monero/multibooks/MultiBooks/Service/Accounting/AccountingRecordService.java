@@ -10,10 +10,10 @@ import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCred
 import com.monero.multibooks.MultiBooks.Repository.Accounting.AccountingRecordCashRepository;
 import com.monero.multibooks.MultiBooks.Repository.Accounting.AccountingRecordCreditRepository;
 import com.monero.multibooks.MultiBooks.Repository.Accounting.AccountingRecordRepository;
-import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
 import com.monero.multibooks.MultiBooks.Service.UserTeam.UserTeamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,19 +28,17 @@ public class AccountingRecordService {
     private final AccountingRecordCashRepository accountingRecordCashRepository;
     private final AccountingRecordCreditRepository accountingRecordCreditRepository;
     private final AuthDomainService authDomainService;
-    private final BusinessTeamRepository businessTeamRepository;
     private final UserTeamService userTeamService;
 
     public AccountingRecordService(AccountingRecordRepository accountingRecordRepository,
                                    AccountingRecordCashRepository accountingRecordCashRepository,
                                    AccountingRecordCreditRepository accountingRecordCreditRepository,
-                                   AuthDomainService authDomainService, BusinessTeamRepository businessTeamRepository,
+                                   AuthDomainService authDomainService,
                                    UserTeamService userTeamService) {
         this.accountingRecordRepository = accountingRecordRepository;
         this.accountingRecordCashRepository = accountingRecordCashRepository;
         this.accountingRecordCreditRepository = accountingRecordCreditRepository;
         this.authDomainService = authDomainService;
-        this.businessTeamRepository = businessTeamRepository;
         this.userTeamService = userTeamService;
     }
 
@@ -90,8 +88,8 @@ public class AccountingRecordService {
         return new AccountingRecordResponse(accountingRecord);
     }
 
-    public AccountingRecordResponse deleteAccountingRecord(@RequestBody AccountingRecordRequest request, HttpServletRequest httpRequest) {
-        AccountingRecord accountingRecord = accountingRecordRepository.findById(request.getId())
+    public AccountingRecordResponse deleteAccountingRecord(@PathVariable Long id, HttpServletRequest httpRequest) {
+        AccountingRecord accountingRecord = accountingRecordRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "AccountingRecord not found"));
         if (accountingRecord.getAccountingRecordCash() != null) {
             authDomainService.validateUserTeam(userTeamService.getUserTeams(accountingRecord.getAccountingRecordCash().getBusinessTeam().getCVRNumber()), httpRequest);
