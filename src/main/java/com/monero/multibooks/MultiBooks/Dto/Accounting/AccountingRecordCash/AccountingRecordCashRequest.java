@@ -24,5 +24,6 @@ public class AccountingRecordCashRequest {
     int total;
     @JsonProperty("businessTeamCVRNumber")
     int businessTeamCVRNumber;
+
 }
 
