@@ -44,10 +44,4 @@ public class AccountingRecordCashController {
     public ResponseEntity<ApiResponse> deleteAccountingRecordCash(@PathVariable Long accountingRecordCashId, HttpServletRequest httpRequest){
         return ResponseEntity.ok(new ApiResponse(accountingRecordCashService.deleteAccountingRecordCash(accountingRecordCashId, httpRequest), "Accounting record cash deleted successfully"));
     }
-
-
-
-
-
-
 }
