@@ -46,11 +46,4 @@ public class AccountingRecordCreditController {
     public ResponseEntity<ApiResponse> deleteAccountingRecordCredit(@PathVariable Long id, HttpServletRequest httpRequest){
         return ResponseEntity.ok(new ApiResponse(accountingRecordCreditService.deleteAccountingRecordCredit(id, httpRequest), "Accounting record credit deleted successfully"));
     }
-
-
-
-
-
-
-
 }
