@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,6 +25,8 @@ public class AccountingRecordCashResponse {
     private int total;
     private BusinessTeamResponse businessTeam;
     private List<AccountingRecordResponse> accountingRecords;
+    private LocalDateTime created;
+    private LocalDateTime edited;
 
     public AccountingRecordCashResponse(AccountingRecordCash a){
         this.id = a.getId();
@@ -33,6 +36,8 @@ public class AccountingRecordCashResponse {
         this.subTotalVat = a.getSubTotalVat();
         this.subTotalNoVat = a.getSubTotalNoVat();
         this.total = a.getTotal();
+        this.created = a.getCreated();
+        this.edited = a.getEdited();
         if(a.getBusinessTeam() != null){
             this.businessTeam = new BusinessTeamResponse(a.getBusinessTeam());
         }

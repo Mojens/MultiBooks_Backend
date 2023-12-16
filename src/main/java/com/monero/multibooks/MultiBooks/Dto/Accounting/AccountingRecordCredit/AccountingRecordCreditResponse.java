@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,6 +25,8 @@ public class AccountingRecordCreditResponse {
     private int subTotalVat;
     private int subTotalNoVat;
     private int total;
+    private LocalDateTime created;
+    private LocalDateTime edited;
     private BusinessTeamResponse businessTeam;
     private ContactsResponse supplier;
     private List<AccountingRecordResponse> accountingRecords;
@@ -37,6 +40,8 @@ public class AccountingRecordCreditResponse {
         this.subTotalVat = a.getSubTotalVat();
         this.subTotalNoVat = a.getSubTotalNoVat();
         this.total = a.getTotal();
+        this.created = a.getCreated();
+        this.edited = a.getEdited();
         if (a.getBusinessTeam() != null) {
             this.businessTeam = new BusinessTeamResponse(a.getBusinessTeam());
         }

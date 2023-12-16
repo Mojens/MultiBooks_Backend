@@ -3,11 +3,14 @@ package com.monero.multibooks.MultiBooks.Entities.Accounting;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -29,6 +32,12 @@ public class AccountingRecordCredit {
     private int subTotalVat;
     private int subTotalNoVat;
     private int total;
+
+    @CreationTimestamp
+    private LocalDateTime created;
+
+    @UpdateTimestamp
+    private LocalDateTime edited;
 
     @ManyToOne
     @JoinColumn(name = "contact_id")
