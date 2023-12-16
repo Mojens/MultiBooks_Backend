@@ -6,6 +6,7 @@ import com.monero.multibooks.MultiBooks.Dto.Accounting.AccountingRecordCash.Acco
 import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCash;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Repository.Accounting.AccountingRecordCashRepository;
+import com.monero.multibooks.MultiBooks.Repository.Accounting.AccountingRecordRepository;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
 import com.monero.multibooks.MultiBooks.Service.UserTeam.UserTeamService;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AccountingRecordCashService {
 
     private final AccountingRecordCashRepository accountingRecordCashRepository;
+    private final AccountingRecordRepository accountingRecordRepository;
     private final BusinessTeamRepository businessTeamRepository;
     private final UserTeamService userTeamService;
     private final AuthDomainService authDomainService;
@@ -29,11 +31,13 @@ public class AccountingRecordCashService {
     public AccountingRecordCashService(AccountingRecordCashRepository accountingRecordCashRepository,
                                        UserTeamService userTeamService,
                                        AuthDomainService authDomainService,
-                                       BusinessTeamRepository businessTeamRepository) {
+                                       BusinessTeamRepository businessTeamRepository,
+                                       AccountingRecordRepository accountingRecordRepository) {
         this.accountingRecordCashRepository = accountingRecordCashRepository;
         this.userTeamService = userTeamService;
         this.authDomainService = authDomainService;
         this.businessTeamRepository = businessTeamRepository;
+        this.accountingRecordRepository = accountingRecordRepository;
     }
 
 
@@ -88,6 +92,7 @@ public class AccountingRecordCashService {
         AccountingRecordCash accountingRecordCash = accountingRecordCashRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "AccountingRecordCash not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(accountingRecordCash.getBusinessTeam().getCVRNumber()), httpRequest);
+        accountingRecordRepository.deleteAllByAccountingRecordCash(accountingRecordCash);
         accountingRecordCashRepository.delete(accountingRecordCash);
         return new AccountingRecordCashResponse(accountingRecordCash);
     }

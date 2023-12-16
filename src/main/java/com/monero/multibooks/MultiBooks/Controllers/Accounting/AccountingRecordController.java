@@ -35,7 +35,7 @@ public class AccountingRecordController {
         return ResponseEntity.ok(new ApiResponse(response, "AccountingRecord updated"));
     }
 
-    @GetMapping("/get")
+    @PostMapping("/get")
     public ResponseEntity<ApiResponse> getAccountingRecord(@RequestBody GetAccountingRecordRequest request, HttpServletRequest httpRequest) {
         List<AccountingRecordResponse> response = accountingRecordService.getAccountingRecords(request, httpRequest);
         return ResponseEntity.ok(new ApiResponse(response, "AccountingRecords retrieved"));

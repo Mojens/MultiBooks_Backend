@@ -7,6 +7,7 @@ import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCred
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import com.monero.multibooks.MultiBooks.Repository.Accounting.AccountingRecordCreditRepository;
+import com.monero.multibooks.MultiBooks.Repository.Accounting.AccountingRecordRepository;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
 import com.monero.multibooks.MultiBooks.Repository.Contacts.ContactsRepository;
 import com.monero.multibooks.MultiBooks.Service.UserTeam.UserTeamService;
@@ -28,17 +29,20 @@ public class AccountingRecordCreditService {
     private final UserTeamService userTeamService;
     private final AuthDomainService authDomainService;
     private final ContactsRepository contactsRepository;
+    private final AccountingRecordRepository accountingRecordRepository;
 
     public AccountingRecordCreditService(AccountingRecordCreditRepository accountingRecordCreditRepository,
                                          BusinessTeamRepository businessTeamRepository,
                                          UserTeamService userTeamService,
                                          AuthDomainService authDomainService,
-                                         ContactsRepository contactsRepository) {
+                                         ContactsRepository contactsRepository,
+                                         AccountingRecordRepository accountingRecordRepository) {
         this.accountingRecordCreditRepository = accountingRecordCreditRepository;
         this.businessTeamRepository = businessTeamRepository;
         this.userTeamService = userTeamService;
         this.authDomainService = authDomainService;
         this.contactsRepository = contactsRepository;
+        this.accountingRecordRepository = accountingRecordRepository;
     }
 
 
@@ -55,6 +59,7 @@ public class AccountingRecordCreditService {
         AccountingRecordCredit accountingRecordCredit = accountingRecordCreditRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "AccountingRecordCredit not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(accountingRecordCredit.getBusinessTeam().getCVRNumber()), httpRequest);
+        accountingRecordRepository.deleteAllByAccountingRecordCredit(accountingRecordCredit);
         accountingRecordCreditRepository.delete(accountingRecordCredit);
         return new AccountingRecordCreditResponse(accountingRecordCredit);
     }
@@ -63,6 +68,8 @@ public class AccountingRecordCreditService {
         AccountingRecordCredit accountingRecordCredit = accountingRecordCreditRepository.findById(request.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "AccountingRecordCredit not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(accountingRecordCredit.getBusinessTeam().getCVRNumber()), httpRequest);
+        Contacts contacts = contactsRepository.findById(request.getSupplierId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
         accountingRecordCredit.setBoughtFrom(request.getBoughtFrom());
         accountingRecordCredit.setDocumentDate(request.getDocumentDate());
         accountingRecordCredit.setDueDate(request.getDueDate());
@@ -70,6 +77,7 @@ public class AccountingRecordCreditService {
         accountingRecordCredit.setSubTotalNoVat(request.getSubTotalNoVat());
         accountingRecordCredit.setSubTotalVat(request.getSubTotalVat());
         accountingRecordCredit.setTotal(request.getTotal());
+        accountingRecordCredit.setSupplier(contacts);
         accountingRecordCreditRepository.save(accountingRecordCredit);
         return new AccountingRecordCreditResponse(accountingRecordCredit);
     }
@@ -78,8 +86,6 @@ public class AccountingRecordCreditService {
         BusinessTeam businessTeam = businessTeamRepository.findById(request.getBusinessTeamCVRNumber())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
-        Contacts supplier = contactsRepository.findById(request.getSupplierId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supplier not found"));
         AccountingRecordCredit accountingRecordCredit = AccountingRecordCredit.builder()
                 .businessTeam(businessTeam)
                 .total(request.getTotal())
@@ -89,7 +95,6 @@ public class AccountingRecordCreditService {
                 .valuta(request.getValuta())
                 .subTotalVat(request.getSubTotalVat())
                 .subTotalNoVat(request.getSubTotalNoVat())
-                .supplier(supplier)
                 .build();
         accountingRecordCreditRepository.save(accountingRecordCredit);
         return new AccountingRecordCreditResponse(accountingRecordCredit);

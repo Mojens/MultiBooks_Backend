@@ -14,5 +14,7 @@ public interface AccountingRecordRepository extends JpaRepository<AccountingReco
 
     List<AccountingRecord> findAllByAccountingRecordCash(AccountingRecordCash accountingRecordCash);
     List<AccountingRecord> findAllByAccountingRecordCredit(AccountingRecordCredit accountingRecordCredit);
+    void deleteAllByAccountingRecordCash(AccountingRecordCash accountingRecordCash);
+    void deleteAllByAccountingRecordCredit(AccountingRecordCredit accountingRecordCredit);
 
 }
