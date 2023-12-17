@@ -10,4 +10,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GraphResponse {
+
+    private int totalUsers;
+    private int totalProducts;
+    private int totalInvoices;
+    private int totalCashRecords;
+    private int totalCreditRecords;
+    private int totalContacts;
+    private int totalBusinessTeams;
+    private int totalUserTeams;
 }
