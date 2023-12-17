@@ -37,6 +37,6 @@ public class Contacts {
     private BusinessTeam businessTeam;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "contacts_id")
+    @JoinColumn(name = "contact_id")
     private List<AccountingRecordCredit> accountingRecordsCredit;
 }
