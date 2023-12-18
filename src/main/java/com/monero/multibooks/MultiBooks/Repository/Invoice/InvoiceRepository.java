@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -19,6 +20,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     List<Invoice> findAllByStatusIsAndBusinessTeam(InvoiceStatus status, BusinessTeam businessTeam);
 
+    List<Invoice> findAllByStatusAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus status, BusinessTeam businessTeam, Instant start, Instant end);
 
 
 }

@@ -2,6 +2,7 @@ package com.monero.multibooks.MultiBooks.Service.Chart;
 
 import com.monero.multibooks.MultiBooks.DomainService.Auth.AuthDomainService;
 import com.monero.multibooks.MultiBooks.DomainService.Invoice.InvoiceDomainService;
+import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Sales.InvoiceSalesResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Status.InvoiceStatusResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalProducts.TotalProductsResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalUsers.TotalUsersResponse;
@@ -18,12 +19,18 @@ import com.monero.multibooks.MultiBooks.Repository.Invoice.InvoiceRepository;
 import com.monero.multibooks.MultiBooks.Repository.Product.ProductRepository;
 import com.monero.multibooks.MultiBooks.Repository.UserTeam.UserTeamRepository;
 import com.monero.multibooks.MultiBooks.Service.UserTeam.UserTeamService;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -77,12 +84,47 @@ public class ChartService {
         return new TotalProductsResponse(products.size());
     }
 
-    public InvoiceStatusResponse getTotalInvoicesByStatus(@PathVariable int CVRNumber, @PathVariable int statusCode, HttpServletRequest httpRequest){
+    public InvoiceStatusResponse getTotalInvoicesByStatus(@PathVariable int CVRNumber, @PathVariable int statusCode, HttpServletRequest httpRequest) {
         InvoiceStatus status = invoiceDomainService.getStatus(statusCode);
         BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
         List<Invoice> invoices = invoiceRepository.findAllByStatusIsAndBusinessTeam(status, businessTeam);
         return new InvoiceStatusResponse(invoices.size(), status.toString());
+    }
+
+    public List<InvoiceSalesResponse> salesForTheYear(@PathVariable int CVRNumber, @RequestParam Instant startDate, @RequestParam Instant endDate, HttpServletRequest httpRequest) {
+        BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+        authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
+        List<Invoice> invoices = invoiceRepository.findAllByStatusAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.PAID, businessTeam, startDate, endDate);
+        List<Invoice> quarter1 = invoices.stream().filter(invoice -> {
+            LocalDateTime localDateTime = invoice.getInvoiceDate().atZone(ZoneId.of("Europe/Paris")).toLocalDateTime();
+            int month = localDateTime.getMonthValue();
+            return month <= 3;
+        }).toList();
+        List<Invoice> quarter2 = invoices.stream().filter(invoice -> {
+            LocalDateTime localDateTime = invoice.getInvoiceDate().atZone(ZoneId.of("Europe/Paris")).toLocalDateTime();
+            int month = localDateTime.getMonthValue();
+            return month <= 6 && month > 3;
+        }).toList();
+        List<Invoice> quarter3 = invoices.stream().filter(invoice -> {
+            LocalDateTime localDateTime = invoice.getInvoiceDate().atZone(ZoneId.of("Europe/Paris")).toLocalDateTime();
+            int month = localDateTime.getMonthValue();
+            return month <= 9 && month > 6;
+        }).toList();
+        List<Invoice> quarter4 = invoices.stream().filter(invoice -> {
+            LocalDateTime localDateTime = invoice.getInvoiceDate().atZone(ZoneId.of("Europe/Paris")).toLocalDateTime();
+            int month = localDateTime.getMonthValue();
+            return month > 9;
+        }).toList();
+        double total1 = quarter1.stream().mapToDouble(Invoice::getTotal).sum();
+        double total2 = quarter2.stream().mapToDouble(Invoice::getTotal).sum();
+        double total3 = quarter3.stream().mapToDouble(Invoice::getTotal).sum();
+        double total4 = quarter4.stream().mapToDouble(Invoice::getTotal).sum();
+        InvoiceSalesResponse q1 = new InvoiceSalesResponse(quarter1.size(), "Q1", total1);
+        InvoiceSalesResponse q2 = new InvoiceSalesResponse(quarter2.size(), "Q2", total2);
+        InvoiceSalesResponse q3 = new InvoiceSalesResponse(quarter3.size(), "Q3", total3);
+        InvoiceSalesResponse q4 = new InvoiceSalesResponse(quarter4.size(), "Q4", total4);
+        return List.of(q1, q2, q3, q4);
     }
 
 

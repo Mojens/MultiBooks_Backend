@@ -14,7 +14,6 @@ import java.time.Instant;
 public class InvoiceSalesResponse {
 
         private int totalInvoices;
-        private Instant startDate;
-        private Instant endDate;
-        private int total;
+        private String quarter;
+        private double total;
 }

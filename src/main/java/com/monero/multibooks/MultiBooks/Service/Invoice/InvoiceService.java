@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 
@@ -119,6 +120,7 @@ public class InvoiceService {
         return new InvoiceResponse(foundInvoice);
     }
 
+    @Transactional
     public InvoiceResponse deleteInvoice(@PathVariable Long invoiceNumber, HttpServletRequest httpRequest) {
         Invoice foundInvoice = invoiceRepository.findById(invoiceNumber)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invoice not found"));
