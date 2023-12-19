@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 @Service
 public class AccountingRecordCashService {
@@ -88,6 +89,7 @@ public class AccountingRecordCashService {
         return new AccountingRecordCashResponse(accountingRecordCash);
     }
 
+    @Transactional
     public AccountingRecordCashResponse deleteAccountingRecordCash(@PathVariable Long id, HttpServletRequest httpRequest) {
         AccountingRecordCash accountingRecordCash = accountingRecordCashRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "AccountingRecordCash not found"));

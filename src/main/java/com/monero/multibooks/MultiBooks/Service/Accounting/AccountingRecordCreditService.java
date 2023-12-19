@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 @Service
 public class AccountingRecordCreditService {
@@ -55,6 +56,7 @@ public class AccountingRecordCreditService {
         return accountingRecordCreditPage.map(AccountingRecordCreditResponse::new);
     }
 
+    @Transactional
     public AccountingRecordCreditResponse deleteAccountingRecordCredit(@PathVariable Long id, HttpServletRequest httpRequest) {
         AccountingRecordCredit accountingRecordCredit = accountingRecordCreditRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "AccountingRecordCredit not found"));
