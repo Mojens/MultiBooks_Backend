@@ -7,7 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.util.List;
+
 @Repository
 public interface AccountingRecordCashRepository extends JpaRepository<AccountingRecordCash, Long> {
     Page<AccountingRecordCash> findAllByBusinessTeam(BusinessTeam businessTeam, Pageable pageable);
+
+    List<AccountingRecordCash> findAllByBusinessTeamAndDocumentDateIsBetween(BusinessTeam businessTeam, Instant start, Instant end);
 }

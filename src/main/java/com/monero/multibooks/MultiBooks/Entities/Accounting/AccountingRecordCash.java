@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
+@ToString
 public class AccountingRecordCash {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +36,7 @@ public class AccountingRecordCash {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "accounting_record_cash_id")
+    @ToString.Exclude
     private List<AccountingRecord> accountingRecords;
 
     @ManyToOne

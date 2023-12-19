@@ -1,12 +1,16 @@
 package com.monero.multibooks.MultiBooks.Service.Chart;
 
 import com.monero.multibooks.MultiBooks.DomainService.Auth.AuthDomainService;
+import com.monero.multibooks.MultiBooks.DomainService.Graph.GraphDomainService;
 import com.monero.multibooks.MultiBooks.DomainService.Invoice.InvoiceDomainService;
+import com.monero.multibooks.MultiBooks.Dto.Graph.Accounting.AccountingTotalResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Sales.InvoiceSalesResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Status.InvoiceStatusResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.TotalInvoices.TotalInvoicesResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalProducts.TotalProductsResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalUsers.TotalUsersResponse;
+import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCash;
+import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCredit;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.Invoice.Invoice;
 import com.monero.multibooks.MultiBooks.Entities.Invoice.InvoiceStatus;
@@ -43,32 +47,30 @@ public class ChartService {
     private final InvoiceRepository invoiceRepository;
     private final AccountingRecordCashRepository accountingRecordCashRepository;
     private final AccountingRecordCreditRepository accountingRecordCreditRepository;
-    private final ContactsRepository contactsRepository;
     private final ProductRepository productRepository;
     private final UserTeamRepository userTeamRepository;
     private final BusinessTeamRepository businessTeamRepository;
-    private final InvoiceDomainService invoiceDomainService;
+    private final GraphDomainService graphDomainService;
 
     public ChartService(UserTeamService userTeamService,
                         AuthDomainService authDomainService,
                         InvoiceRepository invoiceRepository,
                         AccountingRecordCashRepository accountingRecordCashRepository,
                         AccountingRecordCreditRepository accountingRecordCreditRepository,
-                        ContactsRepository contactsRepository,
                         ProductRepository productRepository,
                         UserTeamRepository userTeamRepository,
                         BusinessTeamRepository businessTeamRepository,
-                        InvoiceDomainService invoiceDomainService) {
+                        GraphDomainService graphDomainService) {
         this.userTeamService = userTeamService;
         this.authDomainService = authDomainService;
         this.invoiceRepository = invoiceRepository;
         this.accountingRecordCashRepository = accountingRecordCashRepository;
         this.accountingRecordCreditRepository = accountingRecordCreditRepository;
-        this.contactsRepository = contactsRepository;
         this.productRepository = productRepository;
         this.userTeamRepository = userTeamRepository;
         this.businessTeamRepository = businessTeamRepository;
-        this.invoiceDomainService = invoiceDomainService;
+        this.graphDomainService = graphDomainService;
+
     }
 
     public TotalUsersResponse getTotalUsers(@PathVariable int CVRNumber, HttpServletRequest httpRequest) {
@@ -78,12 +80,13 @@ public class ChartService {
         return new TotalUsersResponse(userTeams.size());
     }
 
-    public TotalInvoicesResponse getTotalInvoices(@PathVariable int CVRNumber, HttpServletRequest httpRequest){
+    public TotalInvoicesResponse getTotalInvoices(@PathVariable int CVRNumber, HttpServletRequest httpRequest) {
         BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
         List<Invoice> invoices = invoiceRepository.findAllByBusinessTeam(businessTeam);
         return new TotalInvoicesResponse(invoices.size());
     }
+
     public TotalProductsResponse getTotalProducts(@PathVariable int CVRNumber, HttpServletRequest httpRequest) {
         BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
@@ -99,13 +102,13 @@ public class ChartService {
         List<Invoice> cancelled = invoiceRepository.findAllByStatusIsAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.CANCELLED, businessTeam, startDate, endDate);
         List<Invoice> overdue = invoiceRepository.findAllByStatusIsAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.OVERDUE, businessTeam, startDate, endDate);
         List<Invoice> overPaid = invoiceRepository.findAllByStatusIsAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.OVERPAID, businessTeam, startDate, endDate);
-       return List.of(
+        return List.of(
                 new InvoiceStatusResponse(confirmed.size(), InvoiceStatus.CONFIRMED),
                 new InvoiceStatusResponse(paid.size(), InvoiceStatus.PAID),
                 new InvoiceStatusResponse(cancelled.size(), InvoiceStatus.CANCELLED),
                 new InvoiceStatusResponse(overdue.size(), InvoiceStatus.OVERDUE),
                 new InvoiceStatusResponse(overPaid.size(), InvoiceStatus.OVERPAID)
-       );
+        );
     }
 
     public List<InvoiceSalesResponse> salesForTheYear(@PathVariable int CVRNumber, @RequestParam Instant startDate, @RequestParam Instant endDate, HttpServletRequest httpRequest) {
@@ -143,5 +146,19 @@ public class ChartService {
         return List.of(q1, q2, q3, q4);
     }
 
+    public AccountingTotalResponse totalVatForQuota(@PathVariable int CVRNumber, @RequestParam Instant startDate, @RequestParam Instant endDate, HttpServletRequest httpRequest) {
+        BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+        authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
+        List<AccountingRecordCash> accountingRecordCashes = accountingRecordCashRepository.findAllByBusinessTeamAndDocumentDateIsBetween(businessTeam, startDate, endDate);
+        List<AccountingRecordCredit> accountingRecordCredits = accountingRecordCreditRepository.findAllByBusinessTeamAndDocumentDateIsBetween(businessTeam, startDate, endDate);
+        System.out.println(accountingRecordCredits);
+        System.out.println(accountingRecordCashes);
+        double totalVat = (accountingRecordCashes.stream().mapToDouble(AccountingRecordCash::getSubTotalVat).sum() + accountingRecordCredits.stream().mapToDouble(AccountingRecordCredit::getSubTotalVat).sum()) * 0.25;
+        System.out.println(totalVat);
+        System.out.println(startDate.toString());
+        System.out.println(endDate.toString());
+        String quota = graphDomainService.getQuarter(startDate, endDate);
+        return new AccountingTotalResponse(quota, totalVat);
+    }
 
 }

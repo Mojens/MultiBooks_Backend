@@ -1,6 +1,8 @@
 package com.monero.multibooks.MultiBooks.Configuration;
 
-import com.monero.multibooks.MultiBooks.Dto.Auth.LoginRequest;
+import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecord;
+import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCash;
+import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCredit;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import com.monero.multibooks.MultiBooks.Entities.Invoice.Invoice;
@@ -118,6 +120,175 @@ public class Setup implements ApplicationRunner {
         createProductToSale(product, oldInvoiceThree);
         createProductToSale(product, oldInvoiceFour);
         createProductToSale(product, oldInvoiceFive);
+
+        AccountingRecordCredit accountingCredit = createAccountingRecordCredit(team, contacts);
+        AccountingRecordCredit accountingCreditTwo = createAccountingRecordCreditTwo(team, contacts);
+        AccountingRecordCredit accountingCreditThree = createAccountingRecordCreditThree(team, contacts);
+        AccountingRecordCash accountingRecordCash = createAccountingRecordCash(team);
+        AccountingRecordCash accountingRecordCashTwo = createAccountingRecordCashTwo(team);
+        AccountingRecordCash accountingRecordCashThree = createAccountingRecordCashThree(team);
+        AccountingRecordCash accountingRecordCashFour = createAccountingRecordCashFour(team);
+        AccountingRecordCash accountingRecordCashFive = createAccountingRecordCashFive(team);
+        createRecordCash(accountingRecordCash);
+        createRecordCash(accountingRecordCashTwo);
+        createRecordCash(accountingRecordCashThree);
+        createRecordCash(accountingRecordCashFour);
+        createRecordCash(accountingRecordCashFive);
+        createRecordCredit(accountingCredit);
+        createRecordCredit(accountingCreditTwo);
+        createRecordCredit(accountingCreditThree);
+
+    }
+
+    private void createRecordCash(AccountingRecordCash accountingRecordCash) {
+        AccountingRecord record = AccountingRecord.builder()
+                .account("Account")
+                .description("Description")
+                .vat(25)
+                .priceInclVat(125)
+                .accountingRecordCash(accountingRecordCash)
+                .build();
+        accountingRecordRepository.save(record);
+    }
+    private void createRecordCredit(AccountingRecordCredit accountingRecordCredit) {
+        AccountingRecord record = AccountingRecord.builder()
+                .account("Account")
+                .description("Description")
+                .vat(25)
+                .priceInclVat(125)
+                .accountingRecordCredit(accountingRecordCredit)
+                .build();
+        accountingRecordRepository.save(record);
+    }
+
+    private AccountingRecordCash createAccountingRecordCash(BusinessTeam team) {
+        AccountingRecordCash accountingCash = AccountingRecordCash.builder()
+                .boughtFrom("Denmark")
+                .businessTeam(team)
+                .subTotalNoVat(250)
+                .subTotalVat(5000)
+                .holdings("Holding")
+                .total(125)
+                .documentDate(Instant.now())
+                .build();
+        accountingRecordCashRepository.save(accountingCash);
+        return accountingCash;
+    }
+    private AccountingRecordCash createAccountingRecordCashTwo(BusinessTeam team) {
+        LocalDate fourMonthsAgo = LocalDate.now().minusMonths(8);
+        Instant instant = fourMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        AccountingRecordCash accountingCash = AccountingRecordCash.builder()
+                .boughtFrom("Denmark")
+                .businessTeam(team)
+                .subTotalNoVat(100)
+                .subTotalVat(321)
+                .holdings("Holding")
+                .total(125)
+                .documentDate(instant)
+                .build();
+        accountingRecordCashRepository.save(accountingCash);
+        return accountingCash;
+    }
+
+    private AccountingRecordCash createAccountingRecordCashThree(BusinessTeam team) {
+        LocalDate fourMonthsAgo = LocalDate.now().minusMonths(1);
+        Instant instant = fourMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        AccountingRecordCash accountingCash = AccountingRecordCash.builder()
+                .boughtFrom("Denmark")
+                .businessTeam(team)
+                .subTotalNoVat(100)
+                .subTotalVat(512)
+                .holdings("Holding")
+                .total(125)
+                .documentDate(instant)
+                .build();
+        accountingRecordCashRepository.save(accountingCash);
+        return accountingCash;
+    }
+
+    private AccountingRecordCash createAccountingRecordCashFour(BusinessTeam team) {
+        LocalDate fourMonthsAgo = LocalDate.now().minusMonths(9);
+        Instant instant = fourMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        AccountingRecordCash accountingCash = AccountingRecordCash.builder()
+                .boughtFrom("Denmark")
+                .businessTeam(team)
+                .subTotalNoVat(100)
+                .subTotalVat(2523)
+                .holdings("Holding")
+                .total(125)
+                .documentDate(instant)
+                .build();
+        accountingRecordCashRepository.save(accountingCash);
+        return accountingCash;
+    }
+
+    private AccountingRecordCash createAccountingRecordCashFive(BusinessTeam team) {
+        LocalDate fourMonthsAgo = LocalDate.now().minusMonths(6);
+        Instant instant = fourMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        AccountingRecordCash accountingCash = AccountingRecordCash.builder()
+                .boughtFrom("Denmark")
+                .businessTeam(team)
+                .subTotalNoVat(100)
+                .subTotalVat(7653)
+                .holdings("Holding")
+                .total(125)
+                .documentDate(instant)
+                .build();
+        accountingRecordCashRepository.save(accountingCash);
+        return accountingCash;
+    }
+
+    private AccountingRecordCredit createAccountingRecordCredit(BusinessTeam team, Contacts contacts) {
+        LocalDate fourMonthsAgo = LocalDate.now().minusMonths(8);
+        Instant instant = fourMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        AccountingRecordCredit accountingRecordCredit = AccountingRecordCredit.builder()
+                .businessTeam(team)
+                .boughtFrom("Test")
+                .documentDate(instant)
+                .dueDate(Instant.now())
+                .subTotalNoVat(100)
+                .total(125)
+                .subTotalVat(21115)
+                .supplier(contacts)
+                .valuta("DKK")
+                .build();
+        accountingRecordCreditRepository.save(accountingRecordCredit);
+        return accountingRecordCredit;
+    }
+    private AccountingRecordCredit createAccountingRecordCreditTwo(BusinessTeam team, Contacts contacts) {
+        LocalDate fourMonthsAgo = LocalDate.now().minusMonths(11);
+        Instant instant = fourMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        AccountingRecordCredit accountingRecordCredit = AccountingRecordCredit.builder()
+                .businessTeam(team)
+                .boughtFrom("Test")
+                .documentDate(instant)
+                .dueDate(Instant.now())
+                .subTotalNoVat(100)
+                .total(125)
+                .subTotalVat(1211)
+                .supplier(contacts)
+                .valuta("DKK")
+                .build();
+        accountingRecordCreditRepository.save(accountingRecordCredit);
+        return accountingRecordCredit;
+    }
+
+    private AccountingRecordCredit createAccountingRecordCreditThree(BusinessTeam team, Contacts contacts) {
+        LocalDate fourMonthsAgo = LocalDate.now().minusMonths(4);
+        Instant instant = fourMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        AccountingRecordCredit accountingRecordCredit = AccountingRecordCredit.builder()
+                .businessTeam(team)
+                .boughtFrom("Test")
+                .documentDate(instant)
+                .dueDate(Instant.now())
+                .subTotalNoVat(100)
+                .total(125)
+                .subTotalVat(213123)
+                .supplier(contacts)
+                .valuta("DKK")
+                .build();
+        accountingRecordCreditRepository.save(accountingRecordCredit);
+        return accountingRecordCredit;
     }
 
     private void createProductToSale(Product product, Invoice invoice) {
@@ -144,7 +315,7 @@ public class Setup implements ApplicationRunner {
                 .invoiceTitle("Invoice")
                 .invoiceComment("Invoice comment")
                 .subTotal(100)
-                .subTotalWithVat(125)
+                .subTotalWithVat(6123)
                 .build();
         invoiceRepository.save(invoice);
         return invoice;
@@ -162,7 +333,7 @@ public class Setup implements ApplicationRunner {
                 .invoiceTitle("Invoice")
                 .invoiceComment("Invoice comment")
                 .subTotal(100)
-                .subTotalWithVat(125)
+                .subTotalWithVat(5123)
                 .build();
         invoiceRepository.save(invoice);
         return invoice;
@@ -180,7 +351,7 @@ public class Setup implements ApplicationRunner {
                 .invoiceTitle("Invoice")
                 .invoiceComment("Invoice comment")
                 .subTotal(100)
-                .subTotalWithVat(125)
+                .subTotalWithVat(200)
                 .build();
         invoiceRepository.save(invoice);
         return invoice;

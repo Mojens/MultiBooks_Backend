@@ -1,5 +1,6 @@
 package com.monero.multibooks.MultiBooks.Controllers.Chart;
 
+import com.monero.multibooks.MultiBooks.Dto.Graph.Accounting.AccountingTotalResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Sales.InvoiceSalesResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Status.InvoiceStatusResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.TotalInvoices.TotalInvoicesResponse;
@@ -64,6 +65,15 @@ public class ChartController {
                                                         HttpServletRequest httpRequest) {
         TotalInvoicesResponse invoices = chartService.getTotalInvoices(cvrNumber, httpRequest);
         return ResponseEntity.ok(new ApiResponse(invoices, "Total invoices retrieved"));
+    }
+
+    @GetMapping("/total-vat/{cvrNumber}")
+    public ResponseEntity<ApiResponse> getVatForQuarter(@PathVariable int cvrNumber,
+                                                        @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant start,
+                                                        @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant end,
+                                                        HttpServletRequest httpRequest) {
+        AccountingTotalResponse response = chartService.totalVatForQuota(cvrNumber, start, end, httpRequest);
+        return ResponseEntity.ok(new ApiResponse(response, "Total invoices retrieved"));
     }
 
 
