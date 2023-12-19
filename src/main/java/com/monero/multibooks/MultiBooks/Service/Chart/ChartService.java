@@ -166,7 +166,7 @@ public class ChartService {
         return new AccountingTotalResponse(quota, totalVat);
     }
 
-    public Page<InvoiceResponse> getInvoicesByStatus(@PathVariable int CVRNumber, @RequestParam int statusCode, Pageable pageable, HttpServletRequest httpRequest){
+    public Page<InvoiceResponse> getInvoicesByStatus(@PathVariable int CVRNumber, @PathVariable int statusCode, Pageable pageable, HttpServletRequest httpRequest){
         BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
         InvoiceStatus status = invoiceDomainService.getStatus(statusCode);

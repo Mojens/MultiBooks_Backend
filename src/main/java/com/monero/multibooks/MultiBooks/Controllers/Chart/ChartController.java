@@ -79,9 +79,9 @@ public class ChartController {
         return ResponseEntity.ok(new ApiResponse(response, "Total invoices retrieved"));
     }
 
-    @GetMapping("/Invoice-status/{cvrNumber}")
+    @GetMapping("/invoice-status/{cvrNumber}/status/{statusCode}")
     public ResponseEntity<ApiResponse> getInvoicesByStatus(@PathVariable int cvrNumber,
-                                                           @RequestParam("statusCode") int statusCode,
+                                                           @PathVariable int statusCode,
                                                            HttpServletRequest httpRequest,
                                                            Pageable pageable) {
         Page<InvoiceResponse> invoices = chartService.getInvoicesByStatus(cvrNumber, statusCode, pageable, httpRequest);
