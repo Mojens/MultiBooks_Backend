@@ -9,6 +9,7 @@ import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Status.InvoiceStatusRe
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.TotalInvoices.TotalInvoicesResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalProducts.TotalProductsResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalUsers.TotalUsersResponse;
+import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceResponse;
 import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCash;
 import com.monero.multibooks.MultiBooks.Entities.Accounting.AccountingRecordCredit;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
@@ -24,6 +25,8 @@ import com.monero.multibooks.MultiBooks.Repository.Invoice.InvoiceRepository;
 import com.monero.multibooks.MultiBooks.Repository.Product.ProductRepository;
 import com.monero.multibooks.MultiBooks.Repository.UserTeam.UserTeamRepository;
 import com.monero.multibooks.MultiBooks.Service.UserTeam.UserTeamService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -51,6 +54,7 @@ public class ChartService {
     private final UserTeamRepository userTeamRepository;
     private final BusinessTeamRepository businessTeamRepository;
     private final GraphDomainService graphDomainService;
+    private final InvoiceDomainService invoiceDomainService;
 
     public ChartService(UserTeamService userTeamService,
                         AuthDomainService authDomainService,
@@ -60,7 +64,8 @@ public class ChartService {
                         ProductRepository productRepository,
                         UserTeamRepository userTeamRepository,
                         BusinessTeamRepository businessTeamRepository,
-                        GraphDomainService graphDomainService) {
+                        GraphDomainService graphDomainService,
+                        InvoiceDomainService invoiceDomainService) {
         this.userTeamService = userTeamService;
         this.authDomainService = authDomainService;
         this.invoiceRepository = invoiceRepository;
@@ -70,7 +75,7 @@ public class ChartService {
         this.userTeamRepository = userTeamRepository;
         this.businessTeamRepository = businessTeamRepository;
         this.graphDomainService = graphDomainService;
-
+        this.invoiceDomainService = invoiceDomainService;
     }
 
     public TotalUsersResponse getTotalUsers(@PathVariable int CVRNumber, HttpServletRequest httpRequest) {
@@ -159,6 +164,14 @@ public class ChartService {
         System.out.println(endDate.toString());
         String quota = graphDomainService.getQuarter(startDate, endDate);
         return new AccountingTotalResponse(quota, totalVat);
+    }
+
+    public Page<InvoiceResponse> getInvoicesByStatus(@PathVariable int CVRNumber, @RequestParam int statusCode, Pageable pageable, HttpServletRequest httpRequest){
+        BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+        authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
+        InvoiceStatus status = invoiceDomainService.getStatus(statusCode);
+        Page<Invoice> invoicePage = invoiceRepository.findAllByBusinessTeamAndStatus(businessTeam, status, pageable);
+        return invoicePage.map(InvoiceResponse::new);
     }
 
 }

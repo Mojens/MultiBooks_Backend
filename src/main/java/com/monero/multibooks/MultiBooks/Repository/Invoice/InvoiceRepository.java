@@ -18,6 +18,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     Page<Invoice> findAllByBusinessTeam(BusinessTeam businessTeam, Pageable pageable);
 
+    Page<Invoice> findAllByBusinessTeamAndStatus(BusinessTeam businessTeam, InvoiceStatus status, Pageable pageable);
+
     List<Invoice> findAllByStatusIs(InvoiceStatus status);
 
     List<Invoice> findAllByBusinessTeam(BusinessTeam businessTeam);

@@ -6,8 +6,11 @@ import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Status.InvoiceStatusRe
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.TotalInvoices.TotalInvoicesResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalProducts.TotalProductsResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalUsers.TotalUsersResponse;
+import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceResponse;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
 import com.monero.multibooks.MultiBooks.Service.Chart.ChartService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +77,15 @@ public class ChartController {
                                                         HttpServletRequest httpRequest) {
         AccountingTotalResponse response = chartService.totalVatForQuota(cvrNumber, start, end, httpRequest);
         return ResponseEntity.ok(new ApiResponse(response, "Total invoices retrieved"));
+    }
+
+    @GetMapping("/Invoice-status/{cvrNumber}")
+    public ResponseEntity<ApiResponse> getInvoicesByStatus(@PathVariable int cvrNumber,
+                                                           @RequestParam("statusCode") int statusCode,
+                                                           HttpServletRequest httpRequest,
+                                                           Pageable pageable) {
+        Page<InvoiceResponse> invoices = chartService.getInvoicesByStatus(cvrNumber, statusCode, pageable, httpRequest);
+        return ResponseEntity.ok(new ApiResponse(invoices, "Invoices retrieved"));
     }
 
 
