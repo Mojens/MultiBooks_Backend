@@ -101,6 +101,11 @@ public class Setup implements ApplicationRunner {
         Invoice invoiceFive = createInvoiceFive(team, contacts);
         Invoice invoiceSix = createInvoiceSix(team, contacts);
         Invoice invoiceSeven = createInvoiceSeven(team, contacts);
+        Invoice oldInvoiceOne = createOldInvoiceOne(team, contacts);
+        Invoice oldInvoiceTwo = createOldInvoiceTwo(team, contacts);
+        Invoice oldInvoiceThree = createOldInvoiceThree(team, contacts);
+        Invoice oldInvoiceFour = createOldInvoiceFour(team, contacts);
+        Invoice oldInvoiceFive = createOldInvoiceFive(team, contacts);
         createProductToSale(product, invoice);
         createProductToSale(product, invoiceTwo);
         createProductToSale(product, invoiceThree);
@@ -108,6 +113,11 @@ public class Setup implements ApplicationRunner {
         createProductToSale(product, invoiceFive);
         createProductToSale(product, invoiceSix);
         createProductToSale(product, invoiceSeven);
+        createProductToSale(product, oldInvoiceOne);
+        createProductToSale(product, oldInvoiceTwo);
+        createProductToSale(product, oldInvoiceThree);
+        createProductToSale(product, oldInvoiceFour);
+        createProductToSale(product, oldInvoiceFive);
     }
 
     private void createProductToSale(Product product, Invoice invoice) {
@@ -238,6 +248,98 @@ public class Setup implements ApplicationRunner {
                 .total(100)
                 .invoiceDate(instant)
                 .status(InvoiceStatus.OVERPAID)
+                .editedBy("")
+                .invoiceTitle("Invoice")
+                .invoiceComment("Invoice comment")
+                .subTotal(100)
+                .subTotalWithVat(125)
+                .build();
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+    private Invoice createOldInvoiceOne(BusinessTeam team, Contacts contacts) {
+        LocalDate localDate = LocalDate.now().minusYears(1).minusMonths(11);
+        Instant instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Invoice invoice = Invoice.builder()
+                .businessTeam(team)
+                .contact(contacts)
+                .total(100)
+                .invoiceDate(instant)
+                .status(InvoiceStatus.PAID)
+                .editedBy("")
+                .invoiceTitle("Invoice")
+                .invoiceComment("Invoice comment")
+                .subTotal(100)
+                .subTotalWithVat(125)
+                .build();
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+    private Invoice createOldInvoiceTwo(BusinessTeam team, Contacts contacts) {
+        LocalDate localDate = LocalDate.now().minusYears(1).minusMonths(8);
+        Instant instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Invoice invoice = Invoice.builder()
+                .businessTeam(team)
+                .contact(contacts)
+                .total(100)
+                .invoiceDate(instant)
+                .status(InvoiceStatus.PAID)
+                .editedBy("")
+                .invoiceTitle("Invoice")
+                .invoiceComment("Invoice comment")
+                .subTotal(100)
+                .subTotalWithVat(125)
+                .build();
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+
+    private Invoice createOldInvoiceThree(BusinessTeam team, Contacts contacts) {
+        LocalDate localDate = LocalDate.now().minusYears(1).minusMonths(9);
+        Instant instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Invoice invoice = Invoice.builder()
+                .businessTeam(team)
+                .contact(contacts)
+                .total(100)
+                .invoiceDate(instant)
+                .status(InvoiceStatus.PAID)
+                .editedBy("")
+                .invoiceTitle("Invoice")
+                .invoiceComment("Invoice comment")
+                .subTotal(100)
+                .subTotalWithVat(125)
+                .build();
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+
+    private Invoice createOldInvoiceFour(BusinessTeam team, Contacts contacts) {
+        LocalDate localDate = LocalDate.now().minusYears(1).minusMonths(6);
+        Instant instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Invoice invoice = Invoice.builder()
+                .businessTeam(team)
+                .contact(contacts)
+                .total(100)
+                .invoiceDate(instant)
+                .status(InvoiceStatus.PAID)
+                .editedBy("")
+                .invoiceTitle("Invoice")
+                .invoiceComment("Invoice comment")
+                .subTotal(100)
+                .subTotalWithVat(125)
+                .build();
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+    private Invoice createOldInvoiceFive(BusinessTeam team, Contacts contacts) {
+        LocalDate localDate = LocalDate.now().minusYears(1).minusMonths(2);
+        Instant instant = localDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Invoice invoice = Invoice.builder()
+                .businessTeam(team)
+                .contact(contacts)
+                .total(100)
+                .invoiceDate(instant)
+                .status(InvoiceStatus.PAID)
                 .editedBy("")
                 .invoiceTitle("Invoice")
                 .invoiceComment("Invoice comment")
