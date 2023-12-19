@@ -98,10 +98,16 @@ public class Setup implements ApplicationRunner {
         Invoice invoiceTwo = createInvoiceTwo(team, contacts);
         Invoice invoiceThree = createInvoiceThree(team, contacts);
         Invoice invoiceFour = createInvoiceFour(team, contacts);
+        Invoice invoiceFive = createInvoiceFive(team, contacts);
+        Invoice invoiceSix = createInvoiceSix(team, contacts);
+        Invoice invoiceSeven = createInvoiceSeven(team, contacts);
         createProductToSale(product, invoice);
         createProductToSale(product, invoiceTwo);
         createProductToSale(product, invoiceThree);
         createProductToSale(product, invoiceFour);
+        createProductToSale(product, invoiceFive);
+        createProductToSale(product, invoiceSix);
+        createProductToSale(product, invoiceSeven);
     }
 
     private void createProductToSale(Product product, Invoice invoice) {
@@ -159,12 +165,30 @@ public class Setup implements ApplicationRunner {
                 .contact(contacts)
                 .total(100)
                 .invoiceDate(instant)
-                .status(InvoiceStatus.PAID)
+                .status(InvoiceStatus.CONFIRMED)
                 .editedBy("")
                 .invoiceTitle("Invoice")
                 .invoiceComment("Invoice comment")
                 .subTotal(100)
                 .subTotalWithVat(125)
+                .build();
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+    private Invoice createInvoiceSeven(BusinessTeam team, Contacts contacts) {
+        LocalDate eighthMonthsAgo = LocalDate.now().minusMonths(8);
+        Instant instant = eighthMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Invoice invoice = Invoice.builder()
+                .businessTeam(team)
+                .contact(contacts)
+                .total(150)
+                .invoiceDate(instant)
+                .status(InvoiceStatus.PAID)
+                .editedBy("")
+                .invoiceTitle("Invoice")
+                .invoiceComment("Invoice comment")
+                .subTotal(150)
+                .subTotalWithVat(175)
                 .build();
         invoiceRepository.save(invoice);
         return invoice;
@@ -177,7 +201,43 @@ public class Setup implements ApplicationRunner {
                 .contact(contacts)
                 .total(100)
                 .invoiceDate(instant)
-                .status(InvoiceStatus.PAID)
+                .status(InvoiceStatus.OVERDUE)
+                .editedBy("")
+                .invoiceTitle("Invoice")
+                .invoiceComment("Invoice comment")
+                .subTotal(100)
+                .subTotalWithVat(125)
+                .build();
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+    private Invoice createInvoiceFive(BusinessTeam team, Contacts contacts) {
+        LocalDate elevenMonthsAgo = LocalDate.now().minusMonths(11);
+        Instant instant = elevenMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Invoice invoice = Invoice.builder()
+                .businessTeam(team)
+                .contact(contacts)
+                .total(100)
+                .invoiceDate(instant)
+                .status(InvoiceStatus.CANCELLED)
+                .editedBy("")
+                .invoiceTitle("Invoice")
+                .invoiceComment("Invoice comment")
+                .subTotal(100)
+                .subTotalWithVat(125)
+                .build();
+        invoiceRepository.save(invoice);
+        return invoice;
+    }
+    private Invoice createInvoiceSix(BusinessTeam team, Contacts contacts) {
+        LocalDate elevenMonthsAgo = LocalDate.now().minusMonths(11);
+        Instant instant = elevenMonthsAgo.atStartOfDay().toInstant(ZoneOffset.UTC);
+        Invoice invoice = Invoice.builder()
+                .businessTeam(team)
+                .contact(contacts)
+                .total(100)
+                .invoiceDate(instant)
+                .status(InvoiceStatus.OVERPAID)
                 .editedBy("")
                 .invoiceTitle("Invoice")
                 .invoiceComment("Invoice comment")

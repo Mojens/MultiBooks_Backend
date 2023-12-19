@@ -4,6 +4,7 @@ import com.monero.multibooks.MultiBooks.DomainService.Auth.AuthDomainService;
 import com.monero.multibooks.MultiBooks.DomainService.Invoice.InvoiceDomainService;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Sales.InvoiceSalesResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.Status.InvoiceStatusResponse;
+import com.monero.multibooks.MultiBooks.Dto.Graph.Invoice.TotalInvoices.TotalInvoicesResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalProducts.TotalProductsResponse;
 import com.monero.multibooks.MultiBooks.Dto.Graph.TotalUsers.TotalUsersResponse;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
@@ -77,6 +78,12 @@ public class ChartService {
         return new TotalUsersResponse(userTeams.size());
     }
 
+    public TotalInvoicesResponse getTotalInvoices(@PathVariable int CVRNumber, HttpServletRequest httpRequest){
+        BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
+        authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
+        List<Invoice> invoices = invoiceRepository.findAllByBusinessTeam(businessTeam);
+        return new TotalInvoicesResponse(invoices.size());
+    }
     public TotalProductsResponse getTotalProducts(@PathVariable int CVRNumber, HttpServletRequest httpRequest) {
         BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
@@ -84,18 +91,27 @@ public class ChartService {
         return new TotalProductsResponse(products.size());
     }
 
-    public InvoiceStatusResponse getTotalInvoicesByStatus(@PathVariable int CVRNumber, @PathVariable int statusCode, HttpServletRequest httpRequest) {
-        InvoiceStatus status = invoiceDomainService.getStatus(statusCode);
+    public List<InvoiceStatusResponse> getInvoiceCircleChart(@PathVariable int CVRNumber, @RequestParam Instant startDate, @RequestParam Instant endDate, HttpServletRequest httpRequest) {
         BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
-        List<Invoice> invoices = invoiceRepository.findAllByStatusIsAndBusinessTeam(status, businessTeam);
-        return new InvoiceStatusResponse(invoices.size(), status.toString());
+        List<Invoice> confirmed = invoiceRepository.findAllByStatusIsAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.CONFIRMED, businessTeam, startDate, endDate);
+        List<Invoice> paid = invoiceRepository.findAllByStatusIsAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.PAID, businessTeam, startDate, endDate);
+        List<Invoice> cancelled = invoiceRepository.findAllByStatusIsAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.CANCELLED, businessTeam, startDate, endDate);
+        List<Invoice> overdue = invoiceRepository.findAllByStatusIsAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.OVERDUE, businessTeam, startDate, endDate);
+        List<Invoice> overPaid = invoiceRepository.findAllByStatusIsAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.OVERPAID, businessTeam, startDate, endDate);
+       return List.of(
+                new InvoiceStatusResponse(confirmed.size(), InvoiceStatus.CONFIRMED),
+                new InvoiceStatusResponse(paid.size(), InvoiceStatus.PAID),
+                new InvoiceStatusResponse(cancelled.size(), InvoiceStatus.CANCELLED),
+                new InvoiceStatusResponse(overdue.size(), InvoiceStatus.OVERDUE),
+                new InvoiceStatusResponse(overPaid.size(), InvoiceStatus.OVERPAID)
+       );
     }
 
     public List<InvoiceSalesResponse> salesForTheYear(@PathVariable int CVRNumber, @RequestParam Instant startDate, @RequestParam Instant endDate, HttpServletRequest httpRequest) {
         BusinessTeam businessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
-        List<Invoice> invoices = invoiceRepository.findAllByStatusAndBusinessTeamAndInvoiceDateBetween(InvoiceStatus.PAID, businessTeam, startDate, endDate);
+        List<Invoice> invoices = invoiceRepository.findAllByStatusInAndBusinessTeamAndInvoiceDateBetween(List.of(InvoiceStatus.PAID, InvoiceStatus.OVERPAID), businessTeam, startDate, endDate);
         List<Invoice> quarter1 = invoices.stream().filter(invoice -> {
             LocalDateTime localDateTime = invoice.getInvoiceDate().atZone(ZoneId.of("Europe/Paris")).toLocalDateTime();
             int month = localDateTime.getMonthValue();
