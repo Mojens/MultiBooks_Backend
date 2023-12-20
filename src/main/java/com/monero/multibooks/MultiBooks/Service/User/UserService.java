@@ -51,7 +51,6 @@ public class UserService {
     }
 
     public UserResponse updateUser(@RequestBody UpdateUserRequest request, HttpServletRequest httpRequest){
-        System.out.println(request);
         User user = userRepository.findByEmail(request.getOldEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         this.authService.validateUserAccess(user.getEmail(), httpRequest);
         user.setEmail(request.getNewEmail());

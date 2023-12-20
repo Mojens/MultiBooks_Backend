@@ -156,12 +156,7 @@ public class ChartService {
         authDomainService.validateUserTeam(userTeamService.getUserTeams(businessTeam.getCVRNumber()), httpRequest);
         List<AccountingRecordCash> accountingRecordCashes = accountingRecordCashRepository.findAllByBusinessTeamAndDocumentDateIsBetween(businessTeam, startDate, endDate);
         List<AccountingRecordCredit> accountingRecordCredits = accountingRecordCreditRepository.findAllByBusinessTeamAndDocumentDateIsBetween(businessTeam, startDate, endDate);
-        System.out.println(accountingRecordCredits);
-        System.out.println(accountingRecordCashes);
         double totalVat = (accountingRecordCashes.stream().mapToDouble(AccountingRecordCash::getSubTotalVat).sum() + accountingRecordCredits.stream().mapToDouble(AccountingRecordCredit::getSubTotalVat).sum()) * 0.25;
-        System.out.println(totalVat);
-        System.out.println(startDate.toString());
-        System.out.println(endDate.toString());
         String quota = graphDomainService.getQuarter(startDate, endDate);
         return new AccountingTotalResponse(quota, totalVat);
     }

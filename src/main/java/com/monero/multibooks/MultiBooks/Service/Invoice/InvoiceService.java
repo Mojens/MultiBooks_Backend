@@ -7,6 +7,7 @@ import com.monero.multibooks.MultiBooks.Dto.Invoice.InvoiceResponse;
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.Contacts.Contacts;
 import com.monero.multibooks.MultiBooks.Entities.Invoice.Invoice;
+import com.monero.multibooks.MultiBooks.Entities.Invoice.InvoiceStatus;
 import com.monero.multibooks.MultiBooks.Entities.UserTeam.UserTeam;
 import com.monero.multibooks.MultiBooks.Repository.BusinessTeam.BusinessTeamRepository;
 import com.monero.multibooks.MultiBooks.Repository.Contacts.ContactsRepository;
@@ -146,9 +147,13 @@ public class InvoiceService {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void cleanupExpiredTokens() {
-        // Mangler logik for at den skal slette hver 48 timer de der ligger i draft
         Instant now = Instant.now();
-        List<Invoice> invoices = invoiceRepository.findAllByStatusIs(invoiceDomainService.getStatus(0));
+        List<Invoice> invoices = invoiceRepository.findAllByStatusIs(InvoiceStatus.DRAFT);
+        invoices.forEach(invoice -> {
+            if (invoice.getInvoiceDate().isBefore(now.minusSeconds(172800))) {
+                invoiceRepository.delete(invoice);
+            }
+        });
 
     }
 }

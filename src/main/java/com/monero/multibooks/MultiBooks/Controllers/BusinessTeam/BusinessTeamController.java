@@ -23,14 +23,12 @@ public class BusinessTeamController {
 
     @PostMapping("create")
     public ResponseEntity<ApiResponse> createBusinessTeam(@RequestBody BusinessTeamRequest request) {
-        System.out.println(request);
         BusinessTeamResponse response = businessTeamService.createBusinessTeam(request);
         return ResponseEntity.ok(new ApiResponse(response, "Business team has been successfully created"));
     }
 
     @PatchMapping("set/{mail}/{CVRNumber}")
     public ResponseEntity<ApiResponse> addUserToBusinessTeam(@PathVariable String mail, @PathVariable int CVRNumber, HttpServletRequest httpRequest) {
-        System.out.println(mail + " " + CVRNumber);
         ApiResponse response = businessTeamService.addUserToBusinessTeam(mail, CVRNumber,httpRequest);
         return ResponseEntity.ok(response);
     }

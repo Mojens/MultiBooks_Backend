@@ -95,14 +95,12 @@ public class AuthController {
 
     @PostMapping("forgot-password")
     public ResponseEntity<ApiResponse> forgotPassword(@RequestBody ForgotPasswordRequest request){
-        System.out.println(request);
         User foundUser = userService.findUserByEmail(request.getEmail());
         if (foundUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email not found");
         }
         ApiResponse tokenResponse = authService.getResetToken(request.getEmail());
         String resetToken = (String) tokenResponse.getData();
-        System.out.println(resetToken);
         authService.sendPasswordResetEmail(request.getEmail(), resetToken);
         return ResponseEntity.ok(new ApiResponse("","Reset link sent to your email - Link expires in 24 hours"));
     }
