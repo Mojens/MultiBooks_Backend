@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService  {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        final Optional<User> optionalUser = userRepository.findById(email);
+        final Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser.orElseThrow(()->new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Incorrect username or password"));
     }
 }

@@ -1,24 +1,18 @@
 package com.monero.multibooks.MultiBooks.Dto.User;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@ToString
 public class UpdateUserRequest {
-
-    String email;
-
-    public UpdateUserRequest(String email) {
-        this.email = email;
-    }
-
-    public UpdateUserRequest(User u) {
-        this.email = u.getEmail();
-    }
+    @JsonProperty("newEmail")
+    String newEmail;
+    @JsonProperty("oldEmail")
+    String oldEmail;
 }

@@ -1,7 +1,5 @@
 package com.monero.multibooks.MultiBooks.Security;
 
-import com.monero.multibooks.MultiBooks.Security.error.CustomOAuth2AccessDeniedHandler;
-import com.monero.multibooks.MultiBooks.Security.error.CustomOAuth2AuthenticationEntryPoint;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -44,8 +42,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Use this to fine tune the CORS headers, if needed (Not required for this semester)
-    //@Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
@@ -66,10 +62,7 @@ public class SecurityConfig {
 
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling((exceptions) -> exceptions
-                        .authenticationEntryPoint(new CustomOAuth2AuthenticationEntryPoint())
-                        .accessDeniedHandler(new CustomOAuth2AccessDeniedHandler())
-                )
+
                 .oauth2ResourceServer()
                 .jwt()
                 .jwtAuthenticationConverter(authenticationConverter());

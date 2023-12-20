@@ -29,9 +29,9 @@ public class BusinessTeamController {
     }
 
     @PatchMapping("set/{mail}/{CVRNumber}")
-    public ResponseEntity<ApiResponse> addUserToBusinessTeam(@PathVariable String mail, @PathVariable int CVRNumber) {
+    public ResponseEntity<ApiResponse> addUserToBusinessTeam(@PathVariable String mail, @PathVariable int CVRNumber, HttpServletRequest httpRequest) {
         System.out.println(mail + " " + CVRNumber);
-        ApiResponse response = businessTeamService.addUserToBusinessTeam(mail, CVRNumber);
+        ApiResponse response = businessTeamService.addUserToBusinessTeam(mail, CVRNumber,httpRequest);
         return ResponseEntity.ok(response);
     }
 
@@ -51,6 +51,18 @@ public class BusinessTeamController {
     public ResponseEntity<ApiResponse> deleteBusinessTeam(@PathVariable int CVRNumber, HttpServletRequest request) {
         BusinessTeamResponse response = businessTeamService.deleteBusinessTeamById(CVRNumber, request);
         return ResponseEntity.ok(new ApiResponse(response, "Business team deleted"));
+    }
+
+    @PatchMapping("edit")
+    public ResponseEntity<ApiResponse> editBusinessTeam( @RequestBody BusinessTeamRequest request, HttpServletRequest httpRequest) {
+        BusinessTeamResponse response = businessTeamService.editBusinessTeamById(request, httpRequest);
+        return ResponseEntity.ok(new ApiResponse(response, "Business team edited"));
+    }
+
+    @GetMapping("is-team-owner/{CVRNumber}")
+    public ResponseEntity<ApiResponse> isTeamOwner(@PathVariable int CVRNumber, HttpServletRequest httpRequest){
+        boolean isTeamOwner = businessTeamService.isTeamOwner(CVRNumber, httpRequest);
+        return ResponseEntity.ok(new ApiResponse(isTeamOwner, "User is team owner"));
     }
 
 }

@@ -104,7 +104,7 @@ public class AuthService {
         if (attempts >= maxAttempts) {
             throw new IllegalStateException("Unable to generate a unique reset token after maximum attempts.");
         }
-        User user = userRepository.findById(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Instant now = Instant.now();
         Instant tokenExpiry = now.plus(24, ChronoUnit.HOURS);
         ResetToken newToken = ResetToken.builder()
@@ -152,8 +152,8 @@ public class AuthService {
     public void validateUserAccess(String mail, HttpServletRequest request) {
         String loggedInUserEmail = authDomainService.extractUserEmailFromToken(request);
         try {
-            User loggedInUser = userRepository.findById(loggedInUserEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
-            if (!loggedInUser.getUsername().equalsIgnoreCase(mail)) {
+            User loggedInUser = userRepository.findByEmail(loggedInUserEmail.toLowerCase()).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
+            if (!loggedInUser.getEmail().equalsIgnoreCase(mail)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
             }
         } catch (Exception e) {

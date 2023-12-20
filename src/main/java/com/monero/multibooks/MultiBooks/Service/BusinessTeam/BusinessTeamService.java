@@ -1,5 +1,6 @@
 package com.monero.multibooks.MultiBooks.Service.BusinessTeam;
 
+import com.monero.multibooks.MultiBooks.DomainService.Auth.AuthDomainService;
 import com.monero.multibooks.MultiBooks.Dto.BusinessTeam.BusinessTeamRequest;
 import com.monero.multibooks.MultiBooks.Dto.BusinessTeam.BusinessTeamResponse;
 import com.monero.multibooks.MultiBooks.Dto.Shared.ApiResponse;
@@ -28,20 +29,23 @@ public class BusinessTeamService {
     private final UserRepository userRepository;
     private final UserTeamRepository userTeamRepository;
     private final AuthService authService;
+    private final AuthDomainService authDomainService;
 
     public BusinessTeamService(BusinessTeamRepository businessTeamRepository,
                                UserRepository userRepository,
                                UserTeamRepository userTeamRepository,
-                               AuthService authService) {
+                               AuthService authService,
+                               AuthDomainService authDomainService) {
         this.businessTeamRepository = businessTeamRepository;
         this.userRepository = userRepository;
         this.userTeamRepository = userTeamRepository;
         this.authService = authService;
+        this.authDomainService = authDomainService;
     }
 
 
     public BusinessTeamResponse createBusinessTeam(@RequestBody BusinessTeamRequest request) {
-        User foundUser = userRepository.findById(request.getOwnerEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User foundUser = userRepository.findByEmail(request.getOwnerEmail()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         BusinessTeam createdBusinessTeam = BusinessTeam.builder()
                 .CVRNumber(request.getCVRNumber())
                 .VATNumber(request.getVATNumber())
@@ -72,9 +76,11 @@ public class BusinessTeamService {
         return new BusinessTeamResponse(businessTeam);
     }
 
-    public ApiResponse setUserBusinessTeam(String mail, int CVRNumber) {
-        User foundUser = userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    public ApiResponse setUserBusinessTeam(String mail, int CVRNumber, HttpServletRequest httpRequest) {
+        User foundUser = userRepository.findByEmail(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         BusinessTeam foundBusinessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
+        List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(foundBusinessTeam);
+        authDomainService.validateUserTeam(userTeams, httpRequest);
         if (userTeamRepository.existsByBusinessTeam(foundBusinessTeam)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Business team already Registered");
         }
@@ -86,9 +92,11 @@ public class BusinessTeamService {
         return new ApiResponse(null, "User has been successfully added to business team");
     }
 
-    public ApiResponse addUserToBusinessTeam(String mail, int CVRNumber) {
-        User foundUser = userRepository.findById(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    public ApiResponse addUserToBusinessTeam(String mail, int CVRNumber, HttpServletRequest httpRequest) {
+        User foundUser = userRepository.findByEmail(mail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         BusinessTeam foundBusinessTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
+        List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(foundBusinessTeam);
+        authDomainService.validateUserTeam(userTeams, httpRequest);
         if (!userTeamRepository.existsByBusinessTeam(foundBusinessTeam)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Business team is not Registered");
         }
@@ -108,14 +116,15 @@ public class BusinessTeamService {
 
     public List<BusinessTeamResponse> userApartOfBusinessTeam(@PathVariable String mail, HttpServletRequest request) {
         authService.validateUserAccess(mail, request);
-        User foundUser = userRepository.findById(mail.toLowerCase()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User foundUser = userRepository.findByEmail(mail.toLowerCase()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         List<UserTeam> userTeams = userTeamRepository.findAllByUser(foundUser);
         return userTeams.stream().map(UserTeam::getBusinessTeam).map(BusinessTeamResponse::new).toList();
     }
 
-    public BusinessTeamResponse getBusinessTeamById(@PathVariable int CVRNumber, HttpServletRequest request) {
+    public BusinessTeamResponse getBusinessTeamById(@PathVariable int CVRNumber, HttpServletRequest httpRequest) {
         BusinessTeam foundTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
-        authService.validateUserAccess(foundTeam.getEmail(), request);
+        List<UserTeam> userTeams = userTeamRepository.findAllByBusinessTeam(foundTeam);
+        authDomainService.validateUserTeam(userTeams, httpRequest);
         return new BusinessTeamResponse(foundTeam);
     }
 
@@ -144,6 +153,12 @@ public class BusinessTeamService {
         foundTeam.setBankName(request.getBankName());
         businessTeamRepository.save(foundTeam);
         return new BusinessTeamResponse(foundTeam);
+    }
+
+    public boolean isTeamOwner(@PathVariable int CVRNumber, HttpServletRequest request) {
+        BusinessTeam foundTeam = businessTeamRepository.findById(CVRNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Business team not found"));
+        authService.validateUserAccess(foundTeam.getTeamOwner().getEmail(), request);
+        return true;
     }
 
 }

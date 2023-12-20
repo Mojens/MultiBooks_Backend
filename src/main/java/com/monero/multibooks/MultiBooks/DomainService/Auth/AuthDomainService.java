@@ -31,6 +31,7 @@ public class AuthDomainService {
     public String extractUserEmailFromToken(HttpServletRequest request) {
         String token = extractToken(request);
         Jwt jwt = jwtDecoder.decode(token);
+        System.out.println("Token Mail:" + jwt.getSubject());
         return jwt.getSubject();
     }
 
