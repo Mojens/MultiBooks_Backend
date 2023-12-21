@@ -68,13 +68,13 @@ public class SecurityConfig {
                 .jwtAuthenticationConverter(authenticationConverter());
 
         http.authorizeHttpRequests((authorize) -> authorize
-                .antMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/auth/isAuthenticated").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/verify-reset-token/{token}").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/business-team/create").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/forgot-password").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/auth/isAuthenticated").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/reset-password").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/verify-reset-token/{token}").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/business-team/create").permitAll()
 
                 .antMatchers("/").permitAll()
                 .antMatchers("/error").permitAll()
