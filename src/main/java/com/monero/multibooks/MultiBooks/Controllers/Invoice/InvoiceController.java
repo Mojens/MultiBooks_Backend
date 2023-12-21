@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/invoice/")
+@RequestMapping("/api/v1/invoice/")
 public class InvoiceController {
 
 

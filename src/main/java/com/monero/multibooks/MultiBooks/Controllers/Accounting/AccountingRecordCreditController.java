@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/accounting-record-credit/")
+@RequestMapping("/api/v1/accounting-record-credit/")
 public class AccountingRecordCreditController {
 
 

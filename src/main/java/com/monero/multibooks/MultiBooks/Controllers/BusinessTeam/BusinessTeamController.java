@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/business-team/")
+@RequestMapping("/api/v1/business-team/")
 public class BusinessTeamController {
 
     private final BusinessTeamService businessTeamService;

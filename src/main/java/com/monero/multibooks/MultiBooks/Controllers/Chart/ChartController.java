@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/chart/")
+@RequestMapping("/api/v1/chart/")
 public class ChartController {
 
     private final ChartService chartService;

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/contacts/")
+@RequestMapping("/api/v1/contacts/")
 public class ContactsController {
 
 

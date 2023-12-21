@@ -28,7 +28,7 @@ import static java.util.stream.Collectors.joining;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/auth/")
+@RequestMapping("/api/v1/auth/")
 public class AuthController {
 
     @Value("${app.token-issuer}")

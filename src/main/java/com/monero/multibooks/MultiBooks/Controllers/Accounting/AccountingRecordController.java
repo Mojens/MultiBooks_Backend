@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/accounting-record/")
+@RequestMapping("/api/v1/accounting-record/")
 public class AccountingRecordController {
 
 

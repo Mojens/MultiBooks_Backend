@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/product/")
+@RequestMapping("/api/v1/product/")
 public class ProductController {
 
 
