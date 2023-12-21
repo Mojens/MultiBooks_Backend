@@ -1,0 +1,5 @@
+"id";"cvrnumber";"attention_person";"company_address";"company_city";"company_country";"company_name";"company_zip_code";"e_invoice_recipient_type";"email";"payment_terms_days";"payment_terms_method";"phone_number";"website";"business_team_id"
+1;67564354;"Mohammad Adel Murtada";"Hovmålvej 74D";"København S";"Danmark";"Techmoh";"2300";"CVR";"Mohammadmurtada@outlook.dk";60;"Netto cash (Net cash)";"+4527162529";"info@techmoh.dk";12345321
+2;98765434;"Kasper petersen";"Jernebanegade 7";"København S";"Denmark";"GLS A/S";"2300";"CVR";"Kasper_p@gls.dk";40;"The invoice is paid";"+4532325656";"www.GLS.dk";12345321
+3;87896545;"Abdel hamid";"Klostermarksvej";"Roskilde";"Denmark";"Ludoo A/S";"4000";"CVR";"ah@ludoo.dk";20;"Current month";"+4578984534";"www.Kloster-ludo.dk";12345321
+4;45880099;"Jens Hansen";"Kirkegårdsvej";"København N";"Denmark";"NorthVpn A/S";"2200";"CVR";"j_h_23@nordvpn.dk";67;"Current month";"+4567876543";"www.nordvpn.dk";12345321

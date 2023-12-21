@@ -1,0 +1,16 @@
+"id";"account";"description";"price_incl_vat";"vat";"accounting_record_cash_id";"accounting_record_credit_id"
+1;"Cost of goods sold";"Computer";1500;375;1;0
+2;"Cost of goods sold";"Computer";9000;2250;2;0
+3;"Cost of goods sold";"Blomster";2500;625;2;0
+4;"Cost of goods sold";"Blomster";200;50;3;0
+5;"Gifts to employees, fully deductible";"Gaver til medarbejdere";6000;1500;3;0
+6;"Cost of goods sold";"Macbook pro";21000;5250;4;0
+7;"Cost of goods sold";"Blomster";2000;500;4;0
+8;"Cost of goods sold";"Computer";2000;500;0;1
+9;"Tax-free travel and transportation allowance";"Rejsebillet";5000;1250;0;1
+10;"Cost of goods sold";"Macbook Pro";21000;5250;0;2
+11;"Cost of goods sold";"Netværks udstyr";61000;15250;0;3
+12;"Gifts to employees, fully deductible";"Blosmter til medarbejdere";5000;1250;0;4
+13;"Employee benefits, including free phone";"Computerudstyr til medarbejdere";6999;1749;0;4
+14;"Gifts to employees, fully deductible";"Blomster";2500;625;0;5
+15;"EU acquisitions of goods (Category A goods)";"Varekøb til opfyldning";6000;1500;6;0
