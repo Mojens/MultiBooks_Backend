@@ -2,10 +2,7 @@ package com.monero.multibooks.MultiBooks.Entities.UserTeam;
 
 import com.monero.multibooks.MultiBooks.Entities.BusinessTeam.BusinessTeam;
 import com.monero.multibooks.MultiBooks.Entities.User.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +12,7 @@ import java.io.Serializable;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserTeam implements Serializable {
 
     @Id

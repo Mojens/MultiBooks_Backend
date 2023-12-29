@@ -10,6 +10,7 @@ import java.time.Instant;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 public class ResetToken {
@@ -24,6 +25,4 @@ public class ResetToken {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public ResetToken() {
-    }
 }

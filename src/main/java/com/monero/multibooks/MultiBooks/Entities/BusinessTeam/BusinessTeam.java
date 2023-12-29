@@ -51,6 +51,10 @@ public class BusinessTeam {
     @Column(length = 100)
     private String website;
 
+    private String accNumber;
+    private int regNumber;
+    private String bankName;
+
     @ManyToOne
     @JoinColumn(name = "team_owner")
     private User teamOwner;
@@ -73,9 +77,6 @@ public class BusinessTeam {
     @OneToMany(mappedBy = "businessTeam")
     private List<AccountingRecordCredit> accountingRecordCredit;
 
-    private String accNumber;
-    private int regNumber;
-    private String bankName;
 
     public BusinessTeam(int CVRNumber, String VATNumber, String companyName, String address, String city, int zipCode, String country, String phoneNumber, String email, String website) {
         this.CVRNumber = CVRNumber;
